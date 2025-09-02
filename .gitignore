@@ -22,3 +22,4 @@ frontend/sketch
 .react-router/
 __pycache__
 .venv/
+.mypy_cache/

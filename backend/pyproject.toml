@@ -6,4 +6,15 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.116.1",
+    "pydantic>=2.11.7",
+    "sqlalchemy>=2.0.43",
 ]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17.1",
+    "ruff>=0.12.11",
+]
+
+[tool.ruff.lint]
+extend-select = ["I"]
