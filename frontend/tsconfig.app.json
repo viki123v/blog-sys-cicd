@@ -1,11 +1,13 @@
 {
-	"compilerOptions": {
-		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-		"target": "ES2022",
-		"useDefineForClassFields": true,
-		"lib": ["ES2022", "DOM", "DOM.Iterable"],
-		"module": "ESNext",
-		"skipLibCheck": true,
+  "compilerOptions": {
+    "rootDirs": [".", "./.react-router/types"],    
+
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
 
 		/* Bundler mode */
 		"moduleResolution": "bundler",
@@ -15,21 +17,24 @@
 		"noEmit": true,
 		"jsx": "react-jsx",
 
-		/* Linting */
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"erasableSyntaxOnly": true,
-		"noFallthroughCasesInSwitch": true,
-		"noUncheckedSideEffectImports": true,
-		"baseUrl": ".",
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
+   
 
-		"paths": {
-			"@assets/*": ["src/assets/*"],
-			"@lib/*": ["src/lib/*"],
-			"@pages/*": ["src/pages/*"],
-			"@components/*": ["src/components/*"]
-		}
-	},
-	"include": ["src", "app"]
+    "paths": {
+      "@assets/*" : ["src/assets/*"],
+      "@lib/*" : ["src/lib/*"],
+      "@pages/*" : ["src/pages/*"],
+      "@components/*" : ["src/components/*"],
+      "@shared/*" : ["src/shared/*"],
+      "@hooks/*" : ["src/hooks/*"]
+    }
+  },
+  "include": ["src", "app", ".react-router/types/**/*"]
 }

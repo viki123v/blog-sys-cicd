@@ -6,14 +6,23 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.116.1",
+    "passlib[bcrypt]>=1.7.4",
+    "psycopg[binary]>=3.2.9",
     "pydantic>=2.11.7",
+    "pyjwt>=2.10.1",
+    "python-dotenv>=1.1.1",
     "sqlalchemy>=2.0.43",
 ]
 
 [dependency-groups]
 dev = [
+    "alchemy-mock>=0.4.3",
     "mypy>=1.17.1",
+    "pytest>=8.4.2",
     "ruff>=0.12.11",
+    "types-passlib>=1.7.7.20250602",
+    "types-pygments>=2.19.0.20250809",
+    "types-ujson>=5.10.0.20250822",
 ]
 
 [tool.ruff.lint]
