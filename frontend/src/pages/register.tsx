@@ -8,7 +8,11 @@ import {
 } from "@components/ui/card";
 import { Input } from "@components/ui/input";
 import { Label } from "@radix-ui/react-label";
-import { Form, redirect, type ActionFunctionArgs } from "react-router";
+import {
+	Form,
+	redirect,
+	type ActionFunctionArgs,
+} from "react-router";
 import {
 	API_HOST,
 	hasResponseError as isFailedResponse,
@@ -16,6 +20,12 @@ import {
 	type JwtBearerResponse,
 } from "@shared/api-types";
 import { processUserRegisterFormData } from "@shared/formProcessing";
+import { Alert, AlertDescription, AlertTitle } from "@components/ui/alert";
+import createErrorBoundaryForUesrInfo from "@shared/user-info-exception-handler";
+
+type RegisterProps = {
+	errorMsg?: string;
+};
 
 const checkIfPasswordsMatch = (data: FormData) => {
 	const areMatch = data.get("password") === data.get("retype-password");
@@ -44,14 +54,12 @@ const createRegistrationMultipartRequest = (
 	});
 };
 
-//TODO: add error handling for fetch methods
-//TODO: add error handling for password mismatch
+//TODO: add playright testing for invalid registration
 
-// eslint-disable-next-line react-refresh/only-export-components
 export async function clientAction({ request }: ActionFunctionArgs) {
 	const rawUserData = await request.formData();
 	checkIfPasswordsMatch(rawUserData);
-	const [userInfo, userFile] = processUserRegisterFormData(rawUserData);
+	const [userInfo, userFile] = processUserRegisterFormData(rawUserData,['logo'],['retype-password']);
 
 	let apiRegisterUserRequest: undefined | Request = undefined;
 
@@ -74,12 +82,12 @@ export async function clientAction({ request }: ActionFunctionArgs) {
 		throw new Error(responseData.message);
 	}
 
-	localStorage.setItem("jwt", responseData.bearer)
+	localStorage.setItem("jwt", responseData.bearer);
 
 	return redirect("/blogs");
 }
 
-const Register = () => {
+const Register = ({ errorMsg }: RegisterProps) => {
 	return (
 		<main className="grid justify-items-center items-center w-screen h-screen">
 			<div className="w-3/4 max-w-[453px]">
@@ -87,6 +95,14 @@ const Register = () => {
 					<CardHeader className="text-center">
 						<CardTitle className="text-xl">Welcome newcomer</CardTitle>
 						<CardDescription>Plase provide all the information</CardDescription>
+						{errorMsg && (
+							<Alert className="bg-red-500 text-whitem my-2">
+								<AlertTitle className="text-start text-lg">Error</AlertTitle>
+								<AlertDescription className="text-white">
+									{errorMsg}
+								</AlertDescription>
+							</Alert>
+						)}
 					</CardHeader>
 					<CardContent>
 						<Form method="post">
@@ -142,4 +158,5 @@ const Register = () => {
 	);
 };
 
+export const ErrorBoundary = createErrorBoundaryForUesrInfo(Register)
 export default Register;
