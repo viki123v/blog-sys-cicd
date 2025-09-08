@@ -1,22 +1,26 @@
 import os
 from datetime import datetime
-from pathlib import Path
+from typing import Optional
 
-from dotenv import load_dotenv
-from sqlalchemy import String, Text, create_engine 
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey, String, Text, create_engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship
 
+
+def create_session_factory(engine):
+    def get_session():
+        with Session(engine) as session:
+            yield session
+    return get_session
 
 class Base(DeclarativeBase):
     type_annotation_map = {
         str: String(100),
     }
 
-
 class Blog(Base):
     __tablename__ = "blogs"
 
-    author: Mapped["BlogUser"] = relationship(back_populates="blogs")
+    author:Mapped[str]=mapped_column(ForeignKey("blog_users.username"))
     title: Mapped[str] = mapped_column(primary_key=True)
     content: Mapped[str] = mapped_column(type_= Text)
     published_at: Mapped[datetime]
@@ -26,12 +30,9 @@ class BlogUser(Base):
     __tablename__ = "blog_users"    
 
     username: Mapped[str] = mapped_column(primary_key=True)
-    email: Mapped[str]
     password_hash: Mapped[str] = mapped_column(name='password')
-    icon_url: Mapped[str] 
-    blogs: Mapped[list["Blog"]] = relationship(back_populates="author") 
-
-envs=load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env")
+    icon_url: Mapped[Optional[str]]
+    blogs: Mapped[list["Blog"]] = relationship() 
 
 user=os.getenv("POSTGRES_USER")
 password=os.getenv("POSTGRES_PASSWORD")
@@ -44,4 +45,4 @@ if user is None or password is None or\
     raise ValueError("The required env variables POSTGRES_USER,POSTGRES_PASSWORD,DB_HOST,DB_PORT aren't defined")
 
 engine = create_engine(f"postgresql+psycopg://{user}:{password}@{host}:{port}/{db_name}", echo=True)
-Base.metadata.create_all(engine)
+create_session=create_session_factory(engine)
