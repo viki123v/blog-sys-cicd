@@ -14,7 +14,6 @@ from src.security import create_jwt, hash_bcrypt, sec_ctx
 
 router = APIRouter(tags=["users"])
 
-#TODO: add register with multipart files 
 @router.post("/register")
 def register_user_without_icon(
     new_user_dto: BlogUserRegisterDTO,
@@ -48,7 +47,7 @@ def get_file_extension(icon:UploadFile) -> str:
     
     return file_extension
 
-#TODO: move to s3, because of distributed nature 
+#TODO: move to s3, because of distributed nature or you can map the same persisted volume to each fastapi instance 
 def create_icon_file(icon: UploadFile, icon_file_name:str, file_extension:str):
     root_path = Path(__file__).parent.parent / 'assets' / 'user_icons'
     

@@ -29,7 +29,8 @@
       "@lib/*" : ["src/lib/*"],
       "@pages/*" : ["src/pages/*"],
       "@components/*" : ["src/components/*"],
-      "@shared/*" : ["src/shared/*"]
+      "@shared/*" : ["src/shared/*"],
+      "@hooks/*" : ["src/hooks/*"]
     }
   },
   "include": ["src", "app"]
