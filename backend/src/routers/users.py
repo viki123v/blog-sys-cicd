@@ -1,6 +1,5 @@
 import json
 import shutil
-from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, UploadFile
@@ -11,6 +10,7 @@ from src import OBJECT_URL
 from src.dtos import BlogUserRegisterDTO
 from src.models import BlogUser, create_session
 from src.security import create_jwt, hash_bcrypt, sec_ctx
+from src.shared import user_icons_folder
 
 router = APIRouter(tags=["users"])
 
@@ -49,18 +49,16 @@ def get_file_extension(icon:UploadFile) -> str:
 
 #TODO: move to s3, because of distributed nature or you can map the same persisted volume to each fastapi instance 
 def create_icon_file(icon: UploadFile, icon_file_name:str, file_extension:str):
-    root_path = Path(__file__).parent.parent / 'assets' / 'user_icons'
-    
     file_name = icon_file_name + '.' +  file_extension
 
-    with open(root_path / file_name ,'wb') as f:    
+    with open(user_icons_folder / file_name ,'wb') as f:    
         shutil.copyfileobj(icon.file,f)
     
 
 @router.post("/register/file")
 async def register_user_with_icon(session: Annotated[Session,Depends(create_session)], icon:UploadFile|None = None, user:UploadFile|None = None):
     if icon is None or user is None: 
-        return JSONResponse(status_code=404, content={"message" : "You haven't provided the user or icon"})  
+        return JSONResponse(status_code=400, content={"message" : "You haven't provided the user or icon"})  
 
     user_dto = parse_user_file(user)
     file_extension = get_file_extension(icon)
@@ -88,7 +86,7 @@ def login_user(
 
     if db_user is None or not sec_ctx.verify(user.password,db_user.password_hash):
         return JSONResponse(
-            status_code=404, content={"message": "Username or password not valid"}
+            status_code=400, content={"message": "Username or password not valid"}
         )
 
     return JSONResponse(status_code=200, content={"bearer": create_jwt({"username": user.username})})

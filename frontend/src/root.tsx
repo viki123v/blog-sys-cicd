@@ -4,7 +4,7 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function links() {
-	return [{ rel: "stylesheet", href: "src/index.css" }];
+	return [{ rel: "stylesheet", href: "/src/index.css" }];
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -18,7 +18,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				/>
 				<title>Blog</title>
 				<Meta />
-				<Links />
+				<Links/>
 			</head>
 			<body>
 				{children}

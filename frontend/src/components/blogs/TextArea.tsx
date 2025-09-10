@@ -17,8 +17,8 @@ const TextArea = ({ setMd }: TextAreaProps) => {
 				setTxt(ev.target.value);
 				setMdDebounced(ev.target.value);
 			}}
+			value={txt}
 		>
-			{txt}
 		</TextareaComponent>
 	);
 };
