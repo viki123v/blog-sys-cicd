@@ -1,0 +1,75 @@
+name: CI 
+
+on:
+    pull_request:
+        branches: [ master ]
+        types: [ opened, reopened, edited ]
+
+permissions:
+  pull-requests: read
+  actions: write 
+
+jobs:
+    fronted-check: 
+      name: Frontend changed 
+      uses: ./.github/workflows/checks.yml
+      with: 
+          fs-path: frontend/**
+
+    frontend:
+        name: Frontend 
+        runs-on: ubuntu-latest
+        needs: [ fronted-check ] 
+        if: ${{needs.fronted-check.outputs.run == 'true'}}
+        defaults:
+          run:
+            working-directory: ./frontend
+        steps:
+            - name: Get code 
+              uses: actions/checkout@v5
+
+            - name: Setup Node.js 
+              uses: actions/setup-node@v4
+              with:
+                node-version-file: 'frontend/.nvmrc'
+
+            - name: Install deps 
+              run: npm i 
+            
+            - name: Linting | Formatting | Typecheck 
+              run: npm run lint && npm run format:check
+
+    backend-check: 
+      name: Backend changed 
+      uses: ./.github/workflows/checks.yml
+      with: 
+          fs-path: backend/** 
+
+    backend:
+        name: Backend 
+        runs-on: ubuntu-latest
+        needs: [ backend-check ] 
+        if: ${{needs.backend-check.outputs.run == 'true'}}
+        defaults:
+          run:
+            working-directory: ./backend
+        steps:
+            - name: Get code 
+              uses: actions/checkout@v5
+            
+            - name: Install python 
+              uses: actions/setup-python@v5
+              with: 
+                python-version-file: 'backend/.python-version'
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v6
+            
+            - name: Install deps 
+              run: uv sync --locked --all-extras --dev
+            
+            - name: Lint | Format | Typecheck 
+              run: |
+                uv run ruff format --check .
+                uv run ruff check . 
+                uv run mypy .

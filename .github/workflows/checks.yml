@@ -1,0 +1,30 @@
+name: Check if fs changed 
+
+on:
+  workflow_call:
+    inputs:
+      fs-path:
+        required: true
+        type: string
+    outputs:
+      run:
+        value: ${{ jobs.fs-check.outputs.run }}
+    
+jobs:
+    fs-check: 
+        runs-on: ubuntu-latest
+        name: Check fs 
+        outputs:
+          run: ${{steps.change.outputs.check}}
+        steps: 
+            - name: Get code 
+              uses: actions/checkout@v5
+
+            - name: Should run
+              id: change 
+              uses: dorny/paths-filter@v3
+              with: 
+                filters: |
+                  check: 
+                    - '${{inputs.fs-path}}'
+                base: 'feat/ci'
