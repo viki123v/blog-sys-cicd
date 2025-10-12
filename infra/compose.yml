@@ -3,12 +3,12 @@ name: blog
 services: 
   frontend:
     container_name: blog-frontend 
-    image: viki123v/cicd-frontend:1.0.0local
+    image: viki123v/cicd-frontend:local
     build: 
-      context: .
+      context: ..
       dockerfile: ./infra/frontend.Dockerfile 
       args:
-        - VITE_HOST=blog-backend:8000
+        - VITE_HOST=localhost:8000
     ports:
       - 5173:80
     depends_on:
@@ -16,27 +16,33 @@ services:
 
   backend:
     container_name: blog-backend  
-    image: viki123v/cicd-frontend:1.0.0local
+    image: viki123v/cicd-backend:local
     build:
-      context: .
+      context: ..
       dockerfile: ./infra/backend.Dockerfile
     environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB=blog 
-      - DB_HOST=blog-backend
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=blog
+      - DB_HOST=blog-db
       - DB_PORT=5432
-      - OBJECT_URL=http://blog-backend:8000/assets/user_icons
-      - JWK
-      - ALLOWED_ORIGIN
+      - OBJECT_URL=http://localhost:8000/assets/user_icons
+      - JWK=${JWK}
+      - ALLOWED_ORIGIN=${ALLOWED_ORIGIN}
+    ports:
+      - 8000:80
     depends_on:
      - db 
 
   db:
     container_name: blog-db
-    image: postres:15.14-alpine3.21
+    image: postgres:18.0
     volumes:
       - blog-db:/var/lib/postgresql
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=blog 
 
 volumes:
   blog-db:

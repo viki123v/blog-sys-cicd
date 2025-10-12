@@ -4,7 +4,7 @@ WORKDIR /app
 RUN apt-get update && \
     apt-get install -y curl 
 
-ADD https://astral.sh/uv/0.9.2/install.sh /uv-installer.sh
+ADD https://astral.sh/uv/0.9.2/install.sh uv-installer.sh
 
 RUN sh uv-installer.sh
 ENV PATH="/root/.local/bin/:$PATH"
