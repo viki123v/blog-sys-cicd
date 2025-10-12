@@ -27,4 +27,3 @@ jobs:
                 filters: |
                   check: 
                     - '${{inputs.fs-path}}'
-                base: 'feat/ci'
