@@ -17,6 +17,7 @@ frontend/psd
 frontend/thumb
 frontend/sketch
 
+
 # End of https://www.toptal.com/developers/gitignore/api/react
 .vscode
 .react-router/
