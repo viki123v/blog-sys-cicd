@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import IntegrityError
 
 from src.routers import blogs, users
-from src.shared import user_icons_folder
+from src.shared import assets
 
 app = FastAPI()
 
@@ -35,6 +36,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.mount("/assets", StaticFiles(directory=user_icons_folder.parent), name="assets")
+
+if not os.path.exists(assets): 
+   Path.mkdir(assets) 
+
+app.mount("/assets", StaticFiles(directory=assets), name="assets")
 app.include_router(users.router)
 app.include_router(blogs.router)
