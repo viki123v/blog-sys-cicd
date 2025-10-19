@@ -9,6 +9,7 @@ export default tseslint.config([
 	globalIgnores(["dist"]),
 	{
 		files: ["**/*.{ts,tsx}"],
+		ignores: [".react-router/**"], 
 		extends: [
 			js.configs.recommended,
 			tseslint.configs.recommended,
@@ -32,6 +33,7 @@ export default tseslint.config([
 					ignoreRestSiblings: true,
 				},
 			],
+			"react-refresh/only-export-components": "off",
 		},
 	},
 ]);

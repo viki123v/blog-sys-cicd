@@ -1,0 +1,53 @@
+name: blog 
+
+services: 
+  frontend:
+    container_name: blog-frontend 
+    image: viki123v/cicd-frontend:local
+    build: 
+      context: ..
+      dockerfile: ./infra/frontend.Dockerfile 
+      args:
+        - VITE_HOST=localhost:8000
+    ports:
+      - 5173:80
+    depends_on:
+      - backend 
+
+  backend:
+    container_name: blog-backend  
+    image: viki123v/cicd-backend:local
+    build:
+      context: ..
+      dockerfile: ./infra/backend.Dockerfile
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=blog
+      - DB_HOST=blog-db
+      - DB_PORT=5432
+      - OBJECT_URL=http://localhost:8000/assets/user_icons
+      - JWK=${JWK}
+      - ALLOWED_ORIGIN=${ALLOWED_ORIGIN}
+    ports:
+      - 8000:80
+    depends_on:
+     - db 
+
+  db:
+    container_name: blog-db
+    image: postgres:18.0
+    volumes:
+      - blog-db:/var/lib/postgresql
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=blog 
+
+volumes:
+  blog-db:
+
+
+networks:
+  blog-net:
+    driver: bridge 
