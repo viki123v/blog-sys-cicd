@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-prod
+  namespace: blog-prod
+  labels:
+    app: fe 
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: fe 
+  template:
+    metadata:
+      labels:
+        apps: fe 
+    spec:
+      containers:
+      - name: name
+        image: / 
