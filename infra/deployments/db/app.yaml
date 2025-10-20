@@ -1,0 +1,30 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: blog-db
+spec:
+  teamId: "admin"
+  volume:
+    size: 1Gi
+  numberOfInstances: 2
+#  allowedSourceRanges: maybe 
+# TODO: find out why the fuck are we doing this 
+# TODO: should add another role for read and write  access only  for the be 
+# TODO: find a way to exclude the information into configs and secrets 
+  users:
+    blog-admin: 
+    - superuser
+    - createdb
+  databases:
+    #TODO: here the same point with config/secrets applies 
+    blog: blog-admin 
+  preparedDatabases:
+    bar: {}
+  postgresql:
+    version: "18"
+  limits:
+    cpu: "0.2"
+    memory: 250Mi
+  volume: 
+    ... 
+  
