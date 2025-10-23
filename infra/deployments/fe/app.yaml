@@ -4,17 +4,22 @@ metadata:
   name: fe-prod
   namespace: blog-prod
   labels:
-    app: fe 
+    deployment: fe
 spec:
   replicas: 1
-  selector: 
+  selector:
     matchLabels:
-      app: fe 
+      app: fe
   template:
     metadata:
       labels:
-        apps: fe 
+        app: fe
     spec:
+      imagePullSecrets:
+        - name: regcred
       containers:
-      - name: fe 
-        image: /  
+        - name: fe-cont
+          image: ghcr.io/viki123v/blog-sys-cicd/fe:1.0.0
+          ports:
+            - name: web
+              containerPort: 80

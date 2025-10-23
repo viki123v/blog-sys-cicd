@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fe-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  namespace: blog-prod
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: fe-service
+            port:
+              number: 80
+      - path: /backend/api/docs
+        pathType: Prefix
+        backend:
+          service:
+            name: be-service
+            port:
+              number: 80

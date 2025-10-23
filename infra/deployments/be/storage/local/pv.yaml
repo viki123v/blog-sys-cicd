@@ -4,6 +4,7 @@ metadata:
   name: be-pv 
   labels:
     type: local
+  namespace: blog-prod
 spec:
   storageClassName: manual
   capacity:
