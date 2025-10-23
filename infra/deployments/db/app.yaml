@@ -10,13 +10,11 @@ spec:
   numberOfInstances: 1  
   enableConnectionPooler: false
   users:
-    blog-admin: 
+    viki: 
     - superuser
     - createdb
   databases:
     blog: blog-admin 
-  preparedDatabases:
-    bar: {}
   postgresql:
     version: "17"
   resources:

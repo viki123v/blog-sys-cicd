@@ -16,5 +16,5 @@ spec:
         apps: fe 
     spec:
       containers:
-      - name: name
-        image: / 
+      - name: fe 
+        image: /  

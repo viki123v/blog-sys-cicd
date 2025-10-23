@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: be
+spec:
+  selector:
+    matchLabels:
+      app: be  
+  serviceName: be-service 
+  replicas: 2 
+  minReadySeconds: 10 
+  template:
+    metadata:
+      labels:
+        app: be 
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: be-conts
+        image: /
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: be-pv
+          mountPath: /app/src/assets
+        env: 
+          - name: JWK
+            valueFrom: 
+              secretKeyRef:
+                name: be-secret
+                key: JWK 
+          - name: ALLOWED_ORIGIN
+            valueFrom: 
+              secretKeyRef:
+                name: be-secret
+                key: ALLOWED_ORIGIN
+          - name: OBJECT_URL
+            value: http://be-service.blog-prod.svc.cluster.local 
+          - name: DB_PORT
+            value: "5432"
+          - name: DB_HOST
+            value: http://be-service.blog-prod.svc.cluster.local
+          - name: POSTGRES_DB
+            value: blog 
+          - name: POSTGRES_USER
+            valueFrom: 
+              secretKeyRef:
+                name: blog-dbs.viki
+                key: username 
+          - name: POSTGRES_PASSWORD
+            valueFrom: 
+              secretKeyRef:
+                name: blog-dbs.viki
+                key: password
+  volumes: 
+    - name: be-pv 
+      persistentVolumeClaim:
+        claimName: be-pv-claim
