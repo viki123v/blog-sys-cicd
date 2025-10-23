@@ -8,7 +8,6 @@ data "external_schema" "sqlalchemy" {
 
 env "sqlalchemy" {
   src = data.external_schema.sqlalchemy.url
-  dev = "postgresql://env.POSTGRES_USER:env.POSTGRES_PASSWORD@env.DB_HOST:env.DB_PORT/env.POSTGRES_DB?search_path=public"
 
   migration {
     dir = "file://migrations"
