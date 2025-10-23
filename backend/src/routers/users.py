@@ -8,8 +8,9 @@ from sqlalchemy import update
 from sqlalchemy.orm import Session
 
 from src import OBJECT_URL
+from src.connection import create_session
 from src.dtos import BlogUserRegisterDTO, JwtUser, UpdateUserDTO
-from src.models import BlogUser, create_session
+from src.models import BlogUser
 from src.security import create_jwt, decode_jwt, hash_bcrypt, sec_ctx
 from src.shared import user_icons_folder
 

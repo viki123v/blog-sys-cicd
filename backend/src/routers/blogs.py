@@ -8,8 +8,9 @@ from fastapi.responses import JSONResponse, Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from src.connection import create_session
 from src.dtos import BlogCreateDTO, BlogDTO, JwtUser, UpdateBlogDto
-from src.models import Blog, create_session
+from src.models import Blog
 from src.security import decode_jwt
 from src.shared import blogs_content_folder
 
