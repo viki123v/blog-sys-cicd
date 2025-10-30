@@ -17,7 +17,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 10
       imagePullSecrets:
-        - name: regcred
+        - name: ghcr-secret
       containers:
         - name: be
           image:  ghcr.io/viki123v/blog-sys-cicd/be:1.0.0
@@ -41,9 +41,9 @@ spec:
             - name: OBJECT_URL
               value: http://be-service.blog-prod.svc.cluster.local
             - name: DB_PORT
-              value: "5432"
+              value: '5432'
             - name: DB_HOST
-              value: http://be-service.blog-prod.svc.cluster.local
+              value: blog-dbs.blog-prod
             - name: POSTGRES_DB
               value: blog
             - name: POSTGRES_USER

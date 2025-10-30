@@ -14,12 +14,11 @@ spec:
     - superuser
     - createdb
   databases:
-    blog: blog-admin 
+    blog: viki
   postgresql:
     version: "17"
   resources:
     limits:
       cpu: "0.2"
       memory: 250Mi
-
   
