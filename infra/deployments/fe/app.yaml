@@ -16,7 +16,7 @@ spec:
         app: fe
     spec:
       imagePullSecrets:
-        - name: regcred
+        - name: ghcr-secret
       containers:
         - name: fe-cont
           image: ghcr.io/viki123v/blog-sys-cicd/fe:1.0.0
