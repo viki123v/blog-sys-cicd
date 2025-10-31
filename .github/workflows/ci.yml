@@ -12,7 +12,7 @@ permissions:
   pull-requests: read
   actions: write 
   packages: write
-  contents: read 
+  contents: write 
 
 jobs:
     fronted-check: 
