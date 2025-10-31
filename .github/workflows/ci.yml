@@ -65,6 +65,7 @@ jobs:
         build-args: |
           NODE_VERSION=${{ vars.NODE_VERSION }},
           VITE_HOST=${{ vars.VITE_HOST }}
+        dockerfile: frontend.Dockerfile
 
     backend-check: 
       name: Backend changed 
