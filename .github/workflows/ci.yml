@@ -1,9 +1,12 @@
 name: CI 
 
 on:
-    pull_request:
-        branches: [ master ]
-        types: [ opened, reopened, synchronize ]
+    # pull_request:
+        # branches: [ master ]
+        # types: [ opened, reopened, synchronize ]
+    push:
+        branches: 
+          - "**"
 
 permissions:
   pull-requests: read
@@ -47,15 +50,26 @@ jobs:
                 username: ${{ github.actor }}
                 password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Build Docker image
+            - name: Get tag for image 
               if: github.event_name == 'push'
+              id: get_tag
+              run: |
+                  TAG=$(git tag --points-at HEAD | head -n 1)
+                  echo "Tag for this commit: $TAG"
+                  echo "TAG=$TAG" >> $GITHUB_ENV
+
+            - name: Build Docker image
+              if: github.event_name == 'push' && steps.get_tag.outputs.TAG != ''
               run: |
                  cd .. 
-                 docker build -t ghcr.io/viki123v/blog-sys-cicd/fe:latest -f infra/backnend.Dockerfile . 
+                 docker build -t ghcr.io/viki123v/blog-sys-cicd/fe:${steps.get_tag.outputs.TAG} -f infra/backnend.Dockerfile . 
 
             - name: Push Docker image
-              if: github.event_name == 'push'
+              if: github.event_name == 'push' && steps.get_tag.outputs.TAG != ''
               run: |
+                docker push ghcr.io/viki123v/blog-sys-cicd/fe:${steps.get_tag.outputs.TAG}
+
+                docker tag ghcr.io/viki123v/blog-sys-cicd/fe:${steps.get_tag.outputs.TAG} ghcr.io/viki123v/blog-sys-cicd/fe:latest 
                 docker push ghcr.io/viki123v/blog-sys-cicd/fe:latest
 
     backend-check: 
