@@ -56,7 +56,7 @@ jobs:
               run: |
                   TAG=$(git tag --points-at HEAD | head -n 1)
                   echo "Tag for this commit: $TAG"
-                  echo "TAG=$TAG" >> $GITHUB_ENV
+                  echo "TAG=$TAG" >> $GITHUB_OUTPUT
 
             - name: Build Docker image
               if: github.event_name == 'push' && steps.get_tag.outputs.TAG != ''
