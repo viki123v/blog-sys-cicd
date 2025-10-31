@@ -3,6 +3,8 @@ if(import.meta.env.VITE_HOST === undefined){
 }
 
 export const API_HOST = `http://${import.meta.env.VITE_HOST}`
+console.log("ENV", import.meta.env.VITE_HOST)
+console.log("API_HOST:", API_HOST)
 
 export type ApiResponseError = {
     message: string

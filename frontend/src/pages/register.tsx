@@ -54,7 +54,6 @@ const createRegistrationMultipartRequest = (
 	});
 };
 
-//TODO: add playright testing for invalid registration
 
 export async function clientAction({ request }: ActionFunctionArgs) {
 	const rawUserData = await request.formData();

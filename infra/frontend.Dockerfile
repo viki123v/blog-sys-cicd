@@ -1,10 +1,12 @@
 ARG NODE_VERSION=20.19.1 
-ARG VITE_HOST
 
 FROM node:${NODE_VERSION}-alpine AS build 
 WORKDIR /app
 
 COPY ./frontend . 
+
+ARG VITE_HOST
+ENV VITE_HOST=${VITE_HOST}
 
 RUN npm ci 
 RUN npm run build 
