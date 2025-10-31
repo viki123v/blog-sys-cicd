@@ -57,9 +57,17 @@ jobs:
               id: get_tag
               run: |
                   git fetch --tags
+
                   TAG=$(git tag --points-at HEAD | head -n 1)
-                  echo "Tag for this commit: $TAG"
-                  echo "TAG=$TAG" >> $GITHUB_OUTPUT
+                  IFS='.' read -r MAJOR MINOR PATCH <<< "$TAG"
+
+                  PATCH=$(PATCH + 1)
+
+                  NEW_TAG="$MAJOR.$MINOR.$PATCH"
+
+                  echo "Tag for this commit: $NEW_TAG"
+
+                  echo "TAG=$NEW_TAG" >> $GITHUB_OUTPUT
 
             - name: Build Docker image
               if: github.event_name == 'push' && steps.get_tag.outputs.TAG != ''
