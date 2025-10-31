@@ -6,7 +6,6 @@ type TextAreaProps = {
 	setMd: React.Dispatch<SetStateAction<string>>;
 };
 
-
 const TextArea = ({ setMd }: TextAreaProps) => {
 	const [txt, setTxt] = useState<string>("");
 	const setMdDebounced = debounceFactory((a: string) => setMd(a), 200);
@@ -18,8 +17,7 @@ const TextArea = ({ setMd }: TextAreaProps) => {
 				setMdDebounced(ev.target.value);
 			}}
 			value={txt}
-		>
-		</TextareaComponent>
+		></TextareaComponent>
 	);
 };
 

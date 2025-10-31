@@ -12,6 +12,7 @@ from src.shared import assets
 
 app = FastAPI()
 
+
 @app.exception_handler(IntegrityError)
 def handle_integrity_error(_, exc: IntegrityError):
     exc_org = str(exc.orig)
@@ -37,8 +38,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-if not os.path.exists(assets): 
-   Path.mkdir(assets) 
+if not os.path.exists(assets):
+    Path.mkdir(assets)
 
 app.mount("/assets", StaticFiles(directory=assets), name="assets")
 app.include_router(users.router)

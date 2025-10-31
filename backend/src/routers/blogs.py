@@ -15,13 +15,12 @@ from src.security import decode_jwt
 from src.shared import blogs_content_folder
 
 router = APIRouter(tags=["blogs"])
-logger=logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 @router.get("/blogs")
 def get_blogs(
-    session: Annotated[Session, Depends(create_session)],
-    title: str | None = None 
+    session: Annotated[Session, Depends(create_session)], title: str | None = None
 ):
     if title is None:
         return fetch_all_blogs(session)
@@ -63,68 +62,56 @@ def upload_attachment(file: UploadFile):
 
     with open(blogs_content_folder / file.filename, "wb") as fd:
         shutil.copyfileobj(file.file, fd)
-        
-@router.delete('/blogs')
+
+
+@router.delete("/blogs")
 def delete_blog(
     title: str,
-    user:Annotated[JwtUser,Depends(decode_jwt)],
-    session:Annotated[Session,Depends(create_session)]
+    user: Annotated[JwtUser, Depends(decode_jwt)],
+    session: Annotated[Session, Depends(create_session)],
 ):
-   db_blog=session.get(Blog, title)
-   
-   if db_blog is None: 
-       return JSONResponse(
-           status_code=404,
-           content={"message": "Blog doesn't exist"}
-       )
-   
-   if db_blog.author_id != user.username:
-       return JSONResponse(
-           status_code=403,
-           content={"message": "You don't have access to change"}
-       )
-       
-   session.delete(db_blog)
-   session.commit()
-   
-   return JSONResponse(
-       status_code=200,
-       content={"message": "Blog deleted"}
-   ) 
+    db_blog = session.get(Blog, title)
+
+    if db_blog is None:
+        return JSONResponse(status_code=404, content={"message": "Blog doesn't exist"})
+
+    if db_blog.author_id != user.username:
+        return JSONResponse(
+            status_code=403, content={"message": "You don't have access to change"}
+        )
+
+    session.delete(db_blog)
+    session.commit()
+
+    return JSONResponse(status_code=200, content={"message": "Blog deleted"})
+
 
 @router.put("/blogs")
 def update_blog(
-    session:Annotated[Session,Depends(create_session)],
-    user:Annotated[JwtUser, Depends(decode_jwt)],
-    title:str, 
-    blog:UpdateBlogDto
-): 
-    db_blog=session.get(Blog,title)
-    
+    session: Annotated[Session, Depends(create_session)],
+    user: Annotated[JwtUser, Depends(decode_jwt)],
+    title: str,
+    blog: UpdateBlogDto,
+):
+    db_blog = session.get(Blog, title)
+
     if db_blog is None:
-        return JSONResponse(
-            status_code=404,
-            content={"message": "Not found"}
-        )
+        return JSONResponse(status_code=404, content={"message": "Not found"})
     if db_blog.author_id != user.username:
-        return JSONResponse(
-            status_code=403,
-            content={
-                "message" : "Not authorized"
-            }
-        )
-    
-    db_blog.description = db_blog.description if not check_str_input(blog.description) else blog.description
-    db_blog.content = db_blog.content if not check_str_input(blog.content) else blog.content
-    
+        return JSONResponse(status_code=403, content={"message": "Not authorized"})
+
+    db_blog.description = (
+        db_blog.description
+        if not check_str_input(blog.description)
+        else blog.description
+    )
+    db_blog.content = (
+        db_blog.content if not check_str_input(blog.content) else blog.content
+    )
+
     session.commit()
-    
-    return JSONResponse(
-        status_code=200,
-        content={
-            "message" : "Updated"
-        }
-    ) 
+
+    return JSONResponse(status_code=200, content={"message": "Updated"})
 
 
 def map_blog_to_dto(blog: Blog) -> BlogDTO:
@@ -148,10 +135,10 @@ def fetch_blog_by_title(session: Session, title: str):
     blog_for_title = session.scalar(select(Blog).where(Blog.title.istartswith(title)))
 
     if blog_for_title is None:
-        return {"blogs": []} 
+        return {"blogs": []}
 
     return {"blogs": [map_blog_to_dto(blog_for_title)]}
 
 
-def check_str_input(x:str|None) -> bool:
-    return x is not None and x.strip() != '' 
+def check_str_input(x: str | None) -> bool:
+    return x is not None and x.strip() != ""

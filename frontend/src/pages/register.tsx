@@ -8,11 +8,7 @@ import {
 } from "@components/ui/card";
 import { Input } from "@components/ui/input";
 import { Label } from "@radix-ui/react-label";
-import {
-	Form,
-	redirect,
-	type ActionFunctionArgs,
-} from "react-router";
+import { Form, redirect, type ActionFunctionArgs } from "react-router";
 import {
 	API_HOST,
 	hasResponseError as isFailedResponse,
@@ -54,13 +50,16 @@ const createRegistrationMultipartRequest = (
 	});
 };
 
-
 export async function clientAction({ request }: ActionFunctionArgs) {
 	const rawUserData = await request.formData();
 
 	checkIfPasswordsMatch(rawUserData);
-	
-	const [userInfo, userFile] = processUserRegisterFormData(rawUserData,['logo'],['retype-password']);
+
+	const [userInfo, userFile] = processUserRegisterFormData(
+		rawUserData,
+		["logo"],
+		["retype-password"],
+	);
 
 	let apiRegisterUserRequest: undefined | Request = undefined;
 
@@ -160,5 +159,5 @@ const Register = ({ errorMsg }: RegisterProps) => {
 	);
 };
 
-export const ErrorBoundary = createErrorBoundaryForUesrInfo(Register)
+export const ErrorBoundary = createErrorBoundaryForUesrInfo(Register);
 export default Register;

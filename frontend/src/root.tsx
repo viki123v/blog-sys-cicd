@@ -1,7 +1,7 @@
 import { ThemeProvider } from "@components/ui/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {  Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
-import "./index.css"
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import "./index.css";
 
 export function Layout({ children }: { children: React.ReactNode }) {
 	return (
@@ -14,7 +14,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				/>
 				<title>Blog</title>
 				<Meta />
-				<Links/>
+				<Links />
 			</head>
 			<body>
 				{children}

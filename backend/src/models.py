@@ -14,7 +14,9 @@ class Base(DeclarativeBase):
 class Blog(Base):
     __tablename__ = "blogs"
 
-    author_id: Mapped[str] = mapped_column(ForeignKey("blog_users.username", onupdate="CASCADE"))
+    author_id: Mapped[str] = mapped_column(
+        ForeignKey("blog_users.username", onupdate="CASCADE")
+    )
     author: Mapped["BlogUser"] = relationship(cascade="save-update, merge")
     title: Mapped[str] = mapped_column(primary_key=True)
     content: Mapped[str] = mapped_column(type_=Text)
@@ -30,5 +32,3 @@ class BlogUser(Base):
     icon_url: Mapped[Optional[str]]
     blogs: Mapped[list["Blog"]] = relationship(back_populates="author")
     member_since: Mapped[datetime] = mapped_column(default=datetime.now)
-
-

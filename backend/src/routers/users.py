@@ -165,7 +165,7 @@ def update_user(
 
     new_password = (
         hash_bcrypt(updateUserDTO.password)
-        if updateUserDTO.password is not None and updateUserDTO.password.strip() != ''
+        if updateUserDTO.password is not None and updateUserDTO.password.strip() != ""
         else db_user.password_hash
     )
     new_username = if_none_then(updateUserDTO.username, username)
@@ -179,9 +179,7 @@ def update_user(
         session.commit()
         return JSONResponse(
             status_code=200,
-            content={
-                "message" : "Changed"
-            },
+            content={"message": "Changed"},
         )
     except Exception as e:
         return JSONResponse(
