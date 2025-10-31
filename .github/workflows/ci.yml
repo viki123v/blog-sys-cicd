@@ -18,6 +18,8 @@ on:
 permissions:
   pull-requests: read
   actions: write 
+  packages: write
+  contents: write 
 
 jobs:
     fronted-check: 
@@ -48,18 +50,11 @@ jobs:
             
             - name: Linting | Formatting | Typecheck 
               run: npm run lint && npm run format:check
-            
-            - name: Log in to GitHub Container Registry
-              if: github.event_name == 'push'
-              uses: docker/login-action@v2
-              with:
-                registry: ghcr.io
-                username: ${{ github.actor }}
-                password: ${{ secrets.GITHUB_TOKEN }}
 
     fe-deploy:
       name: Deploy Frontend
       uses: ./.github/workflows/images.yml
+      needs: [ frontend ]
       with: 
         name: fe 
         build-args: |
