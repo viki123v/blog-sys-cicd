@@ -18,7 +18,9 @@ jobs:
       uses: ./.github/workflows/checks.yml
       with: 
           fs-path: frontend/**
-
+      permissions: 
+         contents: read
+         packages: write
     frontend:
         name: Frontend 
         runs-on: ubuntu-latest
