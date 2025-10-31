@@ -66,7 +66,7 @@ jobs:
               run: |
                   docker build \
                   -t ghcr.io/viki123v/blog-sys-cicd/fe:${{ steps.get_tag.outputs.TAG }} \
-                  -f ../infra/frontend.Dockerfile \
+                  -f ./infra/frontend.Dockerfile \
                   --build-arg NODE_VERSION=${{ vars.NODE_VERSION }} \
                   --build-arg VITE_HOST=${{ vars.VITE_HOST }} \
                   .
