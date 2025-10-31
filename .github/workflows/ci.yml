@@ -54,6 +54,7 @@ jobs:
               if: github.event_name == 'push'
               id: get_tag
               run: |
+                  git fetch --tags
                   TAG=$(git tag --points-at HEAD | head -n 1)
                   echo "Tag for this commit: $TAG"
                   echo "TAG=$TAG" >> $GITHUB_OUTPUT
