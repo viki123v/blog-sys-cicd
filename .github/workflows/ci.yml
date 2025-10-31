@@ -178,8 +178,8 @@ jobs:
             - name: Push Docker image
               if: github.event_name == 'push' && steps.get_tag.outputs.TAG != ''
               run: |
-                docker push ghcr.io/viki123v/blog-sys-cicd/fe:${{ steps.get_tag.outputs.TAG }}
+                docker push ghcr.io/viki123v/blog-sys-cicd/be:${{ steps.get_tag.outputs.TAG }}
 
-                docker tag ghcr.io/viki123v/blog-sys-cicd/fe:${{ steps.get_tag.outputs.TAG }} ghcr.io/viki123v/blog-sys-cicd/fe:latest 
-                docker push ghcr.io/viki123v/blog-sys-cicd/fe:latest
+                docker tag ghcr.io/viki123v/blog-sys-cicd/be:${{ steps.get_tag.outputs.TAG }} ghcr.io/viki123v/blog-sys-cicd/be:latest 
+                docker push ghcr.io/viki123v/blog-sys-cicd/be:latest
 
