@@ -10,6 +10,6 @@ spec:
   capacity:
     storage: 200Mi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   hostPath:
     path: "/tmp/k3dvol"
