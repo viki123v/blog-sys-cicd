@@ -63,7 +63,7 @@ jobs:
               if: github.event_name == 'push' && steps.get_tag.outputs.TAG != ''
               run: |
                  cd .. 
-                 docker build -t ghcr.io/viki123v/blog-sys-cicd/fe:${{ steps.get_tag.outputs.TAG }} -f infra/backnend.Dockerfile . 
+                 docker build -t ghcr.io/viki123v/blog-sys-cicd/fe:${{ steps.get_tag.outputs.TAG }} -f infra/frontend.Dockerfile . 
 
             - name: Push Docker image
               if: github.event_name == 'push' && steps.get_tag.outputs.TAG != ''
