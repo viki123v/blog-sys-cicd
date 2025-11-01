@@ -10,7 +10,14 @@ permissions:
     contents: write
 
 jobs:
+    fe-check:
+        name: Frontend changed 
+        uses: ./.github/workflows/checks.yml
+        with: 
+            fs-path: frontend/**    
+
     fe-deploy:
+      needs: [ fe-check ]
       name: Deploy Frontend
       uses: ./.github/workflows/images.yml
       with: 
@@ -21,7 +28,14 @@ jobs:
         dockerfile: frontend.Dockerfile    
         environment: prod
 
+    be-check:
+        name: Backend changed
+        uses: ./.github/workflows/checks.yml
+        with:
+            fs-path: backend/**
+
     be-deploy:
+      needs: [ be-check ]
       name: Deploy backend
       uses: ./.github/workflows/images.yml
       with: 

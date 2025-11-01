@@ -14,7 +14,6 @@ permissions:
 jobs:
     fronted-check: 
       name: Frontend changed 
-      if: github.event_name == 'pull_request'
       uses: ./.github/workflows/checks.yml
       with: 
           fs-path: frontend/**
@@ -45,7 +44,6 @@ jobs:
 
     backend-check: 
       name: Backend changed 
-      if: github.event_name == 'pull_request'
       uses: ./.github/workflows/checks.yml
       with: 
           fs-path: backend/** 
