@@ -12,5 +12,6 @@ RUN npm ci
 RUN npm run build 
 
 FROM nginx
+LABEL org.opencontainers.image.description="Frontend Docker image for Blog Sys application"
 COPY --from=build app/build /usr/share/nginx/html/build
 COPY infra/nginx.conf /etc/nginx/conf.d/default.conf

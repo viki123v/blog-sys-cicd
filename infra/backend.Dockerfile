@@ -1,4 +1,5 @@
 FROM ubuntu:22.04
+LABEL org.opencontainers.image.description="Backend Docker image for Blog Sys application"
 
 WORKDIR /app
 RUN apt-get update && \
