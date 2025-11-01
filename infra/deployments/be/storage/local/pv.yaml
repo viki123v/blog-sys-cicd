@@ -6,10 +6,12 @@ metadata:
     type: local
   namespace: blog-prod
 spec:
-  storageClassName: manual
+  # If we do kubectl get storageclass, we see that the default storage class is local-path
+  storageClassName: local-path
   capacity:
     storage: 200Mi
   accessModes:
-    - ReadWriteMany
+  # That storage class doesn't support RawWriteMany
+    - ReadWriteOnce
   hostPath:
     path: "/tmp/k3dvol"
