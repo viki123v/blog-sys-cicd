@@ -6,7 +6,8 @@ metadata:
 spec:
   teamId: "admin"
   volume:
-    size: 250Mi
+    size: 100Mi
+    storageClass: gp3
   numberOfInstances: 1  
   enableConnectionPooler: false
   users:
