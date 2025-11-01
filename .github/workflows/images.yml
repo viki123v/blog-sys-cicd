@@ -7,8 +7,9 @@ on:
         required: true
         type: string
       build-args:
-        required: true
+        required: false 
         type: string
+        default: ''
       dockerfile:
         required: true 
         type: string
