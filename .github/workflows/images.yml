@@ -47,8 +47,8 @@ jobs:
                 if [ ! -z "${{inputs.tag}}" ]; then
                   NEW_TAG="${{inputs.tag}}-${{inputs.name}}"
                   
-                  git tag "$PUSH_TAG"
-                  git push origin "$PUSH_TAG"
+                  git tag "$NEW_TAG"
+                  git push origin "$NEW_TAG"
 
                   echo "TAG=${{inputs.tag}}" >> $GITHUB_OUTPUT
                   exit 0
