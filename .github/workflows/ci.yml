@@ -75,6 +75,7 @@ jobs:
         name: Backend 
         runs-on: ubuntu-latest
         if: ${{needs.backend-check.outputs.run == 'true'}}
+        needs: [ backend-check ]
         defaults:
           run:
             working-directory: ./backend
