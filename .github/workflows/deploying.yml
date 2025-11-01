@@ -20,6 +20,7 @@ jobs:
       needs: [ fe-check ]
       name: Deploy Frontend
       uses: ./.github/workflows/images.yml
+      if: ${{needs.fe-check.outputs.run == 'true'}}
       with: 
         name: fe 
         build-args: |
@@ -38,6 +39,7 @@ jobs:
       needs: [ be-check ]
       name: Deploy backend
       uses: ./.github/workflows/images.yml
+      if: ${{needs.be-check.outputs.run == 'true'}}
       with: 
         name: be 
         dockerfile: backend.Dockerfile
