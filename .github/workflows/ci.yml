@@ -7,19 +7,9 @@ on:
     push:
         branches: 
           - master
-    workflow_dispatch:
-      inputs:
-        tag:
-          description: 'Tag for images'
-          type: string
-          required: true
-       
 
 permissions:
-  pull-requests: read
-  actions: write 
-  packages: write
-  contents: write 
+  contents: read 
 
 jobs:
     fronted-check: 
@@ -52,17 +42,6 @@ jobs:
             
             - name: Linting | Formatting | Typecheck 
               run: npm run lint && npm run format:check
-
-    fe-deploy:
-      name: Deploy Frontend
-      if: github.event_name == 'push' 
-      uses: ./.github/workflows/images.yml
-      with: 
-        name: fe 
-        build-args: |
-          NODE_VERSION=${{ vars.NODE_VERSION }},
-          VITE_HOST=${{ vars.VITE_HOST }}
-        dockerfile: frontend.Dockerfile
 
     backend-check: 
       name: Backend changed 
@@ -100,11 +79,4 @@ jobs:
                 uv run ruff check . 
                 uv run mypy .
             
-    be-deploy:
-      name: Deploy backend
-      if: github.event_name == 'push' 
-      uses: ./.github/workflows/images.yml
-      with: 
-        name: be 
-        build-args: |
-        dockerfile: backend.Dockerfile
+   

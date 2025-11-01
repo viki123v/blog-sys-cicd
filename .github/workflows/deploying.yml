@@ -1,0 +1,33 @@
+name: Deploying images 
+
+on:
+    push:
+        branches: 
+          - master
+
+permissions:
+    packages: write
+    contents: write
+
+jobs:
+    fe-deploy:
+      name: Deploy Frontend
+      if: github.event_name == 'push' 
+      uses: ./.github/workflows/images.yml
+      with: 
+        name: fe 
+        build-args: |
+          NODE_VERSION=${{ vars.NODE_VERSION }},
+          VITE_HOST=${{ vars.VITE_HOST }}
+        dockerfile: frontend.Dockerfile    
+        environment: prod
+
+    be-deploy:
+      name: Deploy backend
+      if: github.event_name == 'push' 
+      uses: ./.github/workflows/images.yml
+      with: 
+        name: be 
+        build-args: |
+        dockerfile: backend.Dockerfile
+        environment: prod

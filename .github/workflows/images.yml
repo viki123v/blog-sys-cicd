@@ -12,6 +12,9 @@ on:
       dockerfile:
         required: true 
         type: string
+      environment:
+        required: true
+        type: string
 
 permissions: 
     packages: write
@@ -21,6 +24,7 @@ jobs:
     upload:
         runs-on: ubuntu-latest
         name: Upload image to registry
+        environment: ${{inputs.environment}}
         steps:
             - name: Get code 
               uses: actions/checkout@v5
