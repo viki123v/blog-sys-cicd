@@ -20,7 +20,6 @@ permissions:
 jobs:
     upload:
         runs-on: ubuntu-latest
-        if: github.event_name == 'push' 
         name: Upload image to registry
         steps:
             - name: Get code 
