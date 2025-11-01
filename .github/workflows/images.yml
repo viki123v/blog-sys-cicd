@@ -65,7 +65,7 @@ jobs:
               if: github.event_name == 'push' && steps.get_tag.outputs.TAG != ''
               working-directory: ./
               run: |
-                IFS="," read -r -a BUILD_ARGS_ARRAY <<<  $(echo ${{ inputs.build-args }} | tr '\n' '')      
+                IFS="," read -r -a BUILD_ARGS_ARRAY <<<  $(echo "${{ inputs.build-args }}" | tr '\n' '')      
 
                 BUILD_ARGS_STRING=""
                 for ARG in "${BUILD_ARGS_ARRAY[@]}"; do
