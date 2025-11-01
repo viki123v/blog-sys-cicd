@@ -33,7 +33,7 @@ jobs:
       needs: [ fe-check ]
       name: Deploy Frontend
       uses: ./.github/workflows/images.yml
-      if: ${{github.event_name == 'workflow_dispatch'}} || ${{needs.fe-check.outputs.run == 'true'}}
+      if: (${{github.event_name == 'workflow_dispatch'}} && ${{inputs.service == 'fe'}}) || ${{needs.fe-check.outputs.run == 'true'}}
       with: 
         name: fe 
         build-args: |
@@ -41,6 +41,7 @@ jobs:
           VITE_HOST=${{ vars.VITE_HOST }}
         dockerfile: frontend.Dockerfile    
         environment: prod
+        tag: ${{ github.event.inputs.new-version || '' }}
 
     be-check:
         name: Backend changed
@@ -52,8 +53,9 @@ jobs:
       needs: [ be-check ]
       name: Deploy backend
       uses: ./.github/workflows/images.yml
-      if: ${{github.event_name == 'workflow_dispatch'}} || ${{needs.be-check.outputs.run == 'true'}}
+      if: (${{github.event_name == 'workflow_dispatch'}} && ${{inputs.service=='be'}}) || ${{needs.be-check.outputs.run == 'true'}}
       with: 
         name: be 
         dockerfile: backend.Dockerfile
         environment: prod
+        tag: ${{ github.event.inputs.new-version || '' }}
