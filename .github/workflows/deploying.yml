@@ -4,6 +4,19 @@ on:
     push:
         branches: 
           - master
+    workflow_dispatch:
+        inputs:
+            service:
+                description: 'Service to deploy (fe or be)'
+                type: choice
+                options: 
+                  - fe
+                  - be
+                required: true
+            new-version:
+                description: 'New version tag (xx.xx.xx)'
+                required: false
+                type: string        
    
 permissions:
     packages: write
@@ -20,7 +33,7 @@ jobs:
       needs: [ fe-check ]
       name: Deploy Frontend
       uses: ./.github/workflows/images.yml
-      if: ${{needs.fe-check.outputs.run == 'true'}}
+      if: ${{github.event_name == 'workflow_dispatch'}} || ${{needs.fe-check.outputs.run == 'true'}}
       with: 
         name: fe 
         build-args: |
@@ -39,7 +52,7 @@ jobs:
       needs: [ be-check ]
       name: Deploy backend
       uses: ./.github/workflows/images.yml
-      if: ${{needs.be-check.outputs.run == 'true'}}
+      if: ${{github.event_name == 'workflow_dispatch'}} || ${{needs.be-check.outputs.run == 'true'}}
       with: 
         name: be 
         dockerfile: backend.Dockerfile

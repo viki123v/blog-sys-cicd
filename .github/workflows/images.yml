@@ -16,6 +16,9 @@ on:
       environment:
         required: true
         type: string
+      tag:
+        required: false
+        type: string
 
 permissions: 
     packages: write
@@ -41,6 +44,16 @@ jobs:
             - name: Get tag for image 
               id: get_tag
               run: |
+                if [ ! -z "${{inputs.tag}}" ]; then
+                  NEW_TAG="${{inputs.tag}}-${{inputs.name}}"
+                  
+                  git tag "$PUSH_TAG"
+                  git push origin "$PUSH_TAG"
+
+                  echo "TAG=${{inputs.tag}}" >> $GITHUB_OUTPUT
+                  exit 0
+                fi
+
                 git fetch --tags
 
                 LATEST_TAG=$(git tag --sort=-v:refname | grep "${{inputs.name}}$" | head -n 1)
@@ -63,7 +76,6 @@ jobs:
                 git push origin "$PUSH_TAG"
 
                 echo "TAG=$NEW_IMG_TAG" >> $GITHUB_OUTPUT
-
 
             - name: Build Docker image
               if: steps.get_tag.outputs.TAG != ''
