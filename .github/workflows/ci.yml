@@ -4,10 +4,12 @@ on:
     pull_request:
         branches: [ master ]
         types: [ opened, reopened, synchronize ]
+    push:
+        branches: 
+          - master
 
 permissions:
-  pull-requests: read
-  actions: write 
+  contents: read 
 
 jobs:
     fronted-check: 
@@ -48,8 +50,8 @@ jobs:
     backend:
         name: Backend 
         runs-on: ubuntu-latest
-        needs: [ backend-check ] 
         if: ${{needs.backend-check.outputs.run == 'true'}}
+        needs: [ backend-check ]
         defaults:
           run:
             working-directory: ./backend
@@ -73,3 +75,5 @@ jobs:
                 uv run ruff format --check .
                 uv run ruff check . 
                 uv run mypy .
+            
+   

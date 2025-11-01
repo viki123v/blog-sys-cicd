@@ -1,0 +1,24 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: blog-dbs
+  namespace: blog-prod
+spec:
+  teamId: "admin"
+  volume:
+    size: 250Mi
+  numberOfInstances: 1  
+  enableConnectionPooler: false
+  users:
+    viki: 
+    - superuser
+    - createdb
+  databases:
+    blog: viki
+  postgresql:
+    version: "17"
+  resources:
+    limits:
+      cpu: "0.2"
+      memory: 250Mi
+  

@@ -8,8 +8,9 @@ from sqlalchemy import update
 from sqlalchemy.orm import Session
 
 from src import OBJECT_URL
+from src.connection import create_session
 from src.dtos import BlogUserRegisterDTO, JwtUser, UpdateUserDTO
-from src.models import BlogUser, create_session
+from src.models import BlogUser
 from src.security import create_jwt, decode_jwt, hash_bcrypt, sec_ctx
 from src.shared import user_icons_folder
 
@@ -164,7 +165,7 @@ def update_user(
 
     new_password = (
         hash_bcrypt(updateUserDTO.password)
-        if updateUserDTO.password is not None and updateUserDTO.password.strip() != ''
+        if updateUserDTO.password is not None and updateUserDTO.password.strip() != ""
         else db_user.password_hash
     )
     new_username = if_none_then(updateUserDTO.username, username)
@@ -178,9 +179,7 @@ def update_user(
         session.commit()
         return JSONResponse(
             status_code=200,
-            content={
-                "message" : "Changed"
-            },
+            content={"message": "Changed"},
         )
     except Exception as e:
         return JSONResponse(

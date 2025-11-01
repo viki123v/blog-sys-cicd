@@ -10,36 +10,41 @@ import {
 } from "@components/ui/card";
 import { Input } from "@components/ui/input";
 import { Label } from "@radix-ui/react-label";
-import { API_HOST, hasResponseError, type ApiResponse, type JwtBearerResponse } from "@shared/api-types";
+import {
+	API_HOST,
+	hasResponseError,
+	type ApiResponse,
+	type JwtBearerResponse,
+} from "@shared/api-types";
 import { processTextForm } from "@shared/formProcessing";
 import createErrorBoundaryForUesrInfo from "@shared/user-info-exception-handler";
 import { Form, redirect, type ActionFunctionArgs } from "react-router";
 
-type LoginProps = { 
-	errorMsg? : string 
-}
+type LoginProps = {
+	errorMsg?: string;
+};
 
-export async function clientAction({request}: ActionFunctionArgs){
-	const rawFormData = await request.formData()
-	const processedData = processTextForm(rawFormData)
+export async function clientAction({ request }: ActionFunctionArgs) {
+	const rawFormData = await request.formData();
+	const processedData = processTextForm(rawFormData);
 	const repsonse = await fetch(API_HOST + "/login", {
-		headers:{
+		headers: {
 			"Content-Type": "application/json",
 		},
-		method:"POST", 
-		body: JSON.stringify(processedData)
-	})
-	const dataRepsonse:ApiResponse<JwtBearerResponse> = await repsonse.json() 
+		method: "POST",
+		body: JSON.stringify(processedData),
+	});
+	const dataRepsonse: ApiResponse<JwtBearerResponse> = await repsonse.json();
 
-	if(hasResponseError(repsonse, dataRepsonse)){
-		throw new Error(dataRepsonse.message)
+	if (hasResponseError(repsonse, dataRepsonse)) {
+		throw new Error(dataRepsonse.message);
 	}
 
-	localStorage.setItem("jwt", dataRepsonse.bearer)
-	return redirect("/")
+	localStorage.setItem("jwt", dataRepsonse.bearer);
+	return redirect("/");
 }
 
-const Login = ({errorMsg}:LoginProps) => {
+const Login = ({ errorMsg }: LoginProps) => {
 	return (
 		<main className="grid justify-items-center items-center w-screen h-screen">
 			<div className="w-3/4 max-w-[453px]">
@@ -104,5 +109,5 @@ const Login = ({errorMsg}:LoginProps) => {
 	);
 };
 
-export const ErrorBoundary = createErrorBoundaryForUesrInfo(Login)
+export const ErrorBoundary = createErrorBoundaryForUesrInfo(Login);
 export default Login;

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blog-init-sql
+  namespace: blog-prod
+data:
+  init.sql: |
+    CREATE TABLE "blog_users" (
+      "username" character varying(100) NOT NULL,
+      "password" character varying(100) NOT NULL,
+      "icon_url" character varying(100) NULL,
+      "member_since" timestamp NOT NULL,
+      PRIMARY KEY ("username")
+    );
+    CREATE TABLE "blogs" (
+      "author_id" character varying(100) NOT NULL,
+      "title" character varying(100) NOT NULL,
+      "content" text NOT NULL,
+      "published_at" timestamp NOT NULL,
+      "description" character varying(100) NOT NULL,
+      PRIMARY KEY ("title"),
+      CONSTRAINT "blogs_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "blog_users" ("username") ON UPDATE CASCADE ON DELETE NO ACTION
+    );

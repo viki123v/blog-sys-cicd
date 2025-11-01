@@ -1,0 +1,92 @@
+name: Check if fs changed 
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+      build-args:
+        required: false 
+        type: string
+        default: ''
+      dockerfile:
+        required: true 
+        type: string
+      environment:
+        required: true
+        type: string
+
+permissions: 
+    packages: write
+    contents: write 
+
+jobs:
+    upload:
+        runs-on: ubuntu-latest
+        name: Upload image to registry
+        environment: ${{inputs.environment}}
+        steps:
+            - name: Get code 
+              uses: actions/checkout@v5
+
+            - name: Log in to GitHub Container Registry
+              
+              uses: docker/login-action@v2
+              with:
+                registry: ghcr.io
+                username: ${{ github.actor }}
+                password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Get tag for image 
+              id: get_tag
+              run: |
+                git fetch --tags
+
+                LATEST_TAG=$(git tag --sort=-v:refname | grep "${{inputs.name}}$" | head -n 1)
+
+                if [ -z "$LATEST_TAG" ]; then
+                  LATEST_TAG="0.0.0-${{inputs.name}}"
+                fi
+
+                IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_TAG"
+                IFS="-" read -r PATCH NAME <<< "$PATCH"
+
+                PATCH=$((PATCH + 1))
+
+                PUSH_TAG="$MAJOR.$MINOR.$PATCH-${NAME}"
+                NEW_IMG_TAG="$MAJOR.$MINOR.$PATCH"
+
+                echo "Tag for this commit: $NEW_TAG"
+
+                git tag "$PUSH_TAG"
+                git push origin "$PUSH_TAG"
+
+                echo "TAG=$NEW_IMG_TAG" >> $GITHUB_OUTPUT
+
+
+            - name: Build Docker image
+              if: steps.get_tag.outputs.TAG != ''
+              working-directory: ./
+              run: |
+                IFS="," read -r -a BUILD_ARGS_ARRAY <<<  $(echo "${{ inputs.build-args }}" | tr '\n' '')      
+
+                BUILD_ARGS_STRING=""
+                for ARG in "${BUILD_ARGS_ARRAY[@]}"; do
+                  echo $ARG
+                  BUILD_ARGS_STRING+="--build-arg $ARG "
+                done
+
+                docker build \
+                -t ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:${{ steps.get_tag.outputs.TAG }} \
+                -f ./infra/${{inputs.dockerfile}} \
+                $BUILD_ARGS_STRING \
+                .
+
+            - name: Push Docker image
+              if:  steps.get_tag.outputs.TAG != ''
+              run: |
+                docker push ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:${{ steps.get_tag.outputs.TAG }}
+
+                docker tag ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:${{ steps.get_tag.outputs.TAG }} ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:latest 
+                docker push ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:latest

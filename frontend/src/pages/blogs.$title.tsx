@@ -56,7 +56,7 @@ const Blog = () => {
 
 	return (
 		<>
-            <Header user={user}/>
+			<Header user={user} />
 			<main className="grid justify-items-center items-center w-screen h-screen">
 				<Card
 					className="mb-6  w-[80%] h-[80%] max-w-[700px] max-h-[700px] gap-0"

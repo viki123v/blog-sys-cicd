@@ -44,7 +44,7 @@ export async function clientAction({ params, request }: Route.ActionArgs) {
 		method: "PUT",
 		headers: {
 			Authorization: "Bearer " + localStorage.getItem("jwt") || "",
-			"Content-Type" : "application/json"
+			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
 			description,
@@ -53,8 +53,7 @@ export async function clientAction({ params, request }: Route.ActionArgs) {
 	});
 	const data = await apiRequest.json();
 
-	if (!apiRequest.ok)
-		throw new Error(`Error: ${data!.message}`);
+	if (!apiRequest.ok) throw new Error(`Error: ${data!.message}`);
 
 	return redirect(`/blogs/${blogTitle}`);
 }

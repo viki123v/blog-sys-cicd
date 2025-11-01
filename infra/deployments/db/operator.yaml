@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-operator
+  labels:
+    app: db 
+  namespace: blog-prod 
+spec:
+  replicas: 1
+  strategy:
+    type: "Recreate"
+  selector:
+    matchLabels:
+      name: postgres-operator
+  template:
+    metadata:
+      labels:
+        name: postgres-operator
+    spec:
+      serviceAccountName: postgres-operator
+      containers:
+      - name: postgres-operator
+        image: ghcr.io/zalando/postgres-operator:v1.14.0
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: "0.1" 
+            memory: 250Mi
+          limits:
+            cpu: "0.2" 
+            memory: 500Mi  
+        securityContext:
+          runAsUser: 1000
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+        env:
+        # provided additional ENV vars can overwrite individual config map entries
+        # In order to use the CRD OperatorConfiguration instead, uncomment these lines and comment out the two lines above
+        - name: CONFIG_MAP_NAME
+          value: "postgres-operator"
+        # Define an ID to isolate controllers from each other
+        # - name: CONTROLLER_ID
+        #   value: "second-operator"

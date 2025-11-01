@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-blog-db
+  namespace: blog-prod
+spec:
+  template:
+    spec:
+      containers:
+        - name: init
+          image: postgres:17
+          command: ["psql", "-h", "blog-dbs.blog-prod", "-U", "viki", "-d", "blog", "-f", "/init/init.sql"]
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: viki.blog-dbs.credentials.postgresql.acid.zalan.do
+                  key: password
+          volumeMounts:
+            - name: init-sql
+              mountPath: /init
+      restartPolicy: Never
+      volumes:
+        - name: init-sql
+          configMap:
+            name: blog-init-sql

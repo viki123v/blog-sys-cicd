@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-prod
+  namespace: blog-prod
+  labels:
+    deployment: fe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fe
+  template:
+    metadata:
+      labels:
+        app: fe
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: fe-cont
+          image: ghcr.io/viki123v/blog-sys-cicd/fe:3.0.0
+          ports:
+            - name: web
+              containerPort: 80

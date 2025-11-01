@@ -1,0 +1,222 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-operator 
+  namespace: blog-prod 
+data:
+  api_port: "5432"
+  aws_region: eu-central-1
+  cluster_domain: cluster.local
+  cluster_history_entries: "1000"
+  # Labels assigned in the metadata.labels header  
+  cluster_labels: app:blog-db-instance
+  # Labels assigned to app.yaml instances(Postgresql instances)
+  cluster_name_label: blog-prod-db-instances 
+
+  # Connection pooler configuration, not needed, as specified with app.spec.enableConnectionPooler option
+  # I think it uses PGBalancer 
+  # connection_pooler_default_cpu_limit: "0.1"
+  # connection_pooler_default_cpu_request: "300m"
+  # connection_pooler_default_memory_limit: 100Mi
+  # connection_pooler_default_memory_request: 100Mi
+  # connection_pooler_image: "registry.opensource.zalan.do/acid/pgbouncer:master-32"
+  # connection_pooler_max_db_connections: "10"
+  # connection_pooler_mode: "transaction"
+  # connection_pooler_number_of_instances: "1"
+  # DML for lookup function for the pooler PG
+  # connection_pooler_schema: "pooler"
+  # User used by the pooler 
+  # connection_pooler_user: "pooler"
+  
+  # Retrivable with kubectl get all, meaning display resources
+  # from every namespace 
+  crd_categories: "all"
+  
+  # DNS name for external-dns, when goal is to be public 
+  # db_hosted_zone: eu-central-1
+  # Cloudwatch is expensive 
+  debug_logging: "false"
+  
+  #Limits for the pg containers
+  default_cpu_limit: "0.2"
+  default_cpu_request: 100m
+  default_memory_limit: 300Mi
+  default_memory_request: 100Mi
+
+  # Image for splilo
+  # Spilo is a sidecar container, built from 
+  #  - Patrni high availability (HA) PostgreSQL, meaning controls replication 
+  #  - Postgres 
+  docker_image: ghcr.io/zalando/spilo-17:4.0-p3
+
+  # Privilages for team_admin_role
+  # Admin users are users from that team 
+  enable_admin_role_for_users: "true"
+  
+  # Should the opreator manage the CRDs
+  enable_crd_registration: "true"
+  # Should the operator create crds 
+  enable_crd_validation: "true"
+  # Can secrets come from different namespace 
+  enable_cross_namespace_secret: "false"
+  # Cleanup, when a resouce is deleted 
+  enable_finalizers: "false"
+  # Can the operator access the db 
+  enable_database_access: "true"
+
+  # Is migartion to EBS gp3(ssd based storage) enabled 
+  # enable_ebs_gp3_migration: "false"
+  enable_ebs_gp3_migration_max_size: "0"
+
+  # Init containers for spilo 
+  enable_init_containers: "true"
+  enable_lazy_spilo_upgrade: "false"
+  # Service, pointing to the master node of the cluster
+  # Master node is the node that replicates the data to all the others 
+  enable_master_load_balancer: "false"
+  enable_master_pooler_load_balancer: "false"
+  enable_password_rotation: "false"
+  # Some coping mehanism from patroni 
+  enable_patroni_failsafe_mode: "false"
+  # Adding parent references(meaning they are created / managed from the operator) to the resources
+  enable_owner_references: "false"
+  # When a postgres cluster is deleted, should the PVs be deleted 
+  enable_persistent_volume_claim_deletion: "true"
+  # Spilo specific config
+  enable_pgversion_env_var: "true"
+  # Where should the pods from the pg manifest be located 
+  enable_pod_antiaffinity: "false"
+  # Some failsafe mehanism 
+  enable_pod_disruption_budget: "false"
+  # Watch for opdates of the PostgresTeam CRD 
+  # CRD for definig teams as team_admin_role
+  enable_postgres_team_crd: "false"
+  enable_postgres_team_crd_superusers: "false"
+  # Does it need to check if the pods are ready 
+  enable_readiness_probe: "true"
+  enable_replica_load_balancer: "false"
+  enable_replica_pooler_load_balancer: "false"
+  # Should the secrets be deleted, when a user deletes the pg manifest 
+  enable_secrets_deletion: "true"
+  enable_shm_volume: "true"
+  # Needed for patroni 
+  # more expensive 
+  enable_sidecars: "false"
+  enable_spilo_wal_path_compat: "true"
+  # Cluster managment from different teams 
+  enable_team_id_clustername_prefix: "false"
+  enable_team_member_deprecation: "false"
+  enable_team_superuser: "false"
+  enable_teams_api: "false"
+  etcd_host: ""
+  external_traffic_policy: "Cluster"
+  kubernetes_use_configmaps: "false"
+  # Not needed, we don't need backup 
+  # log_s3_bucket: ""
+  # logical_backup_azure_storage_account_name: ""
+  # logical_backup_azure_storage_container: ""
+  # logical_backup_azure_storage_account_key: ""
+  # logical_backup_cpu_limit: ""
+  # logical_backup_cpu_request: ""
+  # logical_backup_cronjob_environment_secret: ""
+  # logical_backup_docker_image: "ghcr.io/zalando/postgres-operator/logical-backup:v1.15.0"
+  # logical_backup_google_application_credentials: ""
+  # logical_backup_job_prefix: "logical-backup-"
+  # logical_backup_memory_limit: ""
+  # logical_backup_memory_request: ""
+  # logical_backup_provider: "s3"
+  # logical_backup_s3_access_key_id: ""
+  # logical_backup_s3_bucket: "my-bucket-url"
+  # logical_backup_s3_bucket_prefix: "spilo"
+  # logical_backup_s3_region: ""
+  # logical_backup_s3_endpoint: ""
+  # logical_backup_s3_secret_access_key: ""
+  # logical_backup_s3_sse: "AES256"
+  # logical_backup_s3_retention_time: ""
+  # logical_backup_schedule: "30 00 * * *"
+  major_version_upgrade_mode: "manual"
+  # major_version_upgrade_team_allow_list: ""
+  # DNS for master loadbalancer 
+  master_dns_name_format: "{cluster}.{namespace}.{hostedzone}"
+  # Depricated / For backwards compatability  
+  # master_legacy_dns_name_format: "{cluster}.{team}.{hostedzone}"
+  master_pod_move_timeout: 20m
+  # max_cpu_request: "1"
+
+  # How does the operator manage the resources
+  # Max instances in specific clusters 
+  max_instances: "1"
+  # max_memory_request: 4Gi
+  min_cpu_limit: 250m
+  min_instances: "-1"
+  min_memory_limit: 250Mi
+  minimal_major_version: "13"
+  # node_readiness_label: "status:ready"
+  # node_readiness_label_merge: "OR"
+
+  # oauth_token_secret_name: postgresql-operator
+  # some oauth config, not need, not externally visible 
+  # pam_configuration: "https://info.example.com/oauth2/tokeninfo?access_token= uid realm=/employees"
+  # pam_role_name: zalandos
+  patroni_api_check_interval: "1s"
+  patroni_api_check_timeout: "5s"
+  password_rotation_interval: "90"
+  password_rotation_user_retention: "180"
+  pdb_master_label_selector: "true"
+  pdb_name_format: "postgres-{cluster}-pdb"
+  persistent_volume_claim_retention_policy: "when_deleted:retain,when_scaled:retain"
+  pod_antiaffinity_preferred_during_scheduling: "false"
+  pod_antiaffinity_topology_key: "kubernetes.io/hostname"
+  pod_deletion_wait_timeout: 10m
+  # pod_environment_configmap: "default/my-custom-config"
+  # pod_environment_secret: "my-custom-secret"
+  pod_label_wait_timeout: 10m
+  pod_management_policy: "ordered_ready"
+  # pod_priority_class_name: "postgres-pod-priority"
+  pod_role_label: spilo-role
+  pod_service_account_definition: ""
+  pod_service_account_name: "postgres-pod"
+  pod_service_account_role_binding_definition: ""
+  pod_terminate_grace_period: 5m
+  postgres_superuser_teams: "postgres_superusers"
+  protected_role_names: "admin,cron_admin"
+  ready_wait_interval: 3s
+  ready_wait_timeout: 30s
+  repair_period: 5m
+  replica_dns_name_format: "{cluster}-repl.{namespace}.{hostedzone}"
+  replica_legacy_dns_name_format: "{cluster}-repl.{team}.{hostedzone}"
+  replication_username: standby
+  resource_check_interval: 3s
+  resource_check_timeout: 10m
+  resync_period: 30m
+  ring_log_lines: "100"
+  role_deletion_suffix: "_deleted"
+  secret_name_template: "{username}.{cluster}.credentials.{tprkind}.{tprgroup}"
+  share_pgsocket_with_sidecars: "false"
+  # sidecar_docker_images: ""
+  set_memory_request_to_limit: "false"
+  spilo_allow_privilege_escalation: "true"
+  # spilo_runasuser: 101
+  # spilo_runasgroup: 103
+  # spilo_fsgroup: 103
+  # AWS volume resizing, not need
+  spilo_privileged: "false"
+  # How additional request for volume are met 
+  storage_resize_mode: "off"
+  # superuser name in each pg instance 
+  super_username: postgres
+  # pg versions 
+  target_major_version: "17"
+
+  # IDK what teams mean in this context 
+  # team_admin_role: "admin"
+  # team_api_role_configuration: "log_statement:all"
+  # teams_api_url: http://fake-teams-api.default.svc.cluster.local
+  # toleration: "key:db-only,operator:Exists,effect:NoSchedule"
+  # wal_az_storage_account: ""
+  # wal_gs_bucket: ""
+  # wal_s3_bucket: ""
+  # Where to watch 
+  watched_namespace: "blog-prod"  # listen to all namespaces
+  # worker processes in the control plane, from the operator 
+  workers: "1"

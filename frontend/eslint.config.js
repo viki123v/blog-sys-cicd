@@ -9,7 +9,7 @@ export default tseslint.config([
 	globalIgnores(["dist"]),
 	{
 		files: ["**/*.{ts,tsx}"],
-		ignores: [".react-router/**"], 
+		ignores: [".react-router/**"],
 		extends: [
 			js.configs.recommended,
 			tseslint.configs.recommended,

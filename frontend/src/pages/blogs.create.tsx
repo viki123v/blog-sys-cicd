@@ -43,12 +43,11 @@ export async function clientAction({ request }: ActionFunctionArgs) {
 }
 
 const CreateBlog = ({ errorMsg }: CreateBlogProps) => {
-
-	const user = loadUserFromJWT()
+	const user = loadUserFromJWT();
 
 	return (
 		<>
-			<Header user={user}/>
+			<Header user={user} />
 			<main className="grid justify-items-center items-center w-screen h-screen">
 				<div className="w-3/4 max-w-[800px]">
 					<Card>
