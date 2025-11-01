@@ -84,5 +84,5 @@ jobs:
               run: |
                 docker push ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:${{ steps.get_tag.outputs.TAG }}
 
-                docker tag ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:${{ steps.get_tag.outputs.TAG }} ghcr.io/viki123v/blog-sys-cicd/fe:latest 
+                docker tag ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:${{ steps.get_tag.outputs.TAG }} ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:latest 
                 docker push ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:latest
