@@ -22,7 +22,6 @@ jobs:
         name: Frontend 
         runs-on: ubuntu-latest
         needs: [ fronted-check ] 
-        environment: prod 
         if: ${{needs.fronted-check.outputs.run == 'true'}}
         defaults:
           run:
