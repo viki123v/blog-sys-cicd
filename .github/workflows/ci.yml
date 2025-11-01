@@ -97,54 +97,11 @@ jobs:
                 uv run ruff check . 
                 uv run mypy .
             
-            - name: Log in to GitHub Container Registry
-              if: github.event_name == 'push'
-              uses: docker/login-action@v2
-              with:
-                registry: ghcr.io
-                username: ${{ github.actor }}
-                password: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Get tag for image 
-              if: github.event_name == 'push'
-              id: get_tag
-              run: |
-                git fetch --tags
-
-                LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
-
-                if [ -z "$LATEST_TAG" ]; then
-                  LATEST_TAG="0.0.0"
-                fi
-
-                IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_TAG"
-
-                PATCH=$((PATCH + 1))
-
-                NEW_TAG="$MAJOR.$MINOR.$PATCH"
-
-                echo "Tag for this commit: $NEW_TAG"
-
-                git tag "$NEW_TAG"
-                git push origin "$NEW_TAG"
-
-                echo "TAG=$NEW_TAG" >> $GITHUB_OUTPUT
-
-
-            - name: Build Docker image
-              if: github.event_name == 'push' && steps.get_tag.outputs.TAG != ''
-              working-directory: ./
-              run: |
-                  docker build \
-                  -t ghcr.io/viki123v/blog-sys-cicd/be:${{ steps.get_tag.outputs.TAG }} \
-                  -f ./infra/backend.Dockerfile \
-                  .
-
-            - name: Push Docker image
-              if: github.event_name == 'push' && steps.get_tag.outputs.TAG != ''
-              run: |
-                docker push ghcr.io/viki123v/blog-sys-cicd/be:${{ steps.get_tag.outputs.TAG }}
-
-                docker tag ghcr.io/viki123v/blog-sys-cicd/be:${{ steps.get_tag.outputs.TAG }} ghcr.io/viki123v/blog-sys-cicd/be:latest 
-                docker push ghcr.io/viki123v/blog-sys-cicd/be:latest
-
+    be-deploy:
+      name: Deploy backend
+      uses: ./.github/workflows/images.yml
+      needs: [ backend ]
+      with: 
+        name: be 
+        build-args: |
+        dockerfile: backend.Dockerfile
