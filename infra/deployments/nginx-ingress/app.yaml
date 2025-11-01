@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Traefik doesn't support svc from ExternalName type, so we tried nginx 
+  # External name is a proxy service which just returns the dns configured
+  # We need it here, because the agro-servers are in another namespace which we can specify in the dns 
+  name: nginx
+  namespace: blog-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx 

@@ -4,9 +4,11 @@ metadata:
   name: be-pv-claim
   namespace: blog-prod
 spec:
-  storageClassName: manual
+  # If we do kubectl get storageclass, we see that the default storage class is local-path
+  storageClassName: local-path
   accessModes:
-    - ReadWriteMany
+  # That storage class doesn't support RawWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 200Mi
