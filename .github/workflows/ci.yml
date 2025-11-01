@@ -104,7 +104,6 @@ jobs:
       name: Deploy backend
       if: github.event_name == 'push' 
       uses: ./.github/workflows/images.yml
-      needs: [ backend ]
       with: 
         name: be 
         build-args: |
