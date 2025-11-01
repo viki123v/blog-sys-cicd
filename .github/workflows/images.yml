@@ -74,7 +74,7 @@ jobs:
                 done
 
                 docker build \
-                -t ghcr.io/viki123v/blog-sys-cicd/fe:${{ steps.get_tag.outputs.TAG }} \
+                -t ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:${{ steps.get_tag.outputs.TAG }} \
                 -f ./infra/${{inputs.dockerfile}} \
                 $BUILD_ARGS_STRING \
                 .
