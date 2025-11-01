@@ -33,7 +33,7 @@ jobs:
       needs: [ fe-check ]
       name: Deploy Frontend
       uses: ./.github/workflows/images.yml
-      if: (${{github.event_name == 'workflow_dispatch'}} && ${{inputs.service == 'fe'}}) || ${{needs.fe-check.outputs.run == 'true'}}
+      if: (${{github.event_name == 'workflow_dispatch'}} && ${{inputs.service == 'fe'}}) || (${{github.event_name != 'workflow_dispatch'}} && ${{needs.fe-check.outputs.run == 'true'}})
       with: 
         name: fe 
         build-args: |
@@ -53,7 +53,7 @@ jobs:
       needs: [ be-check ]
       name: Deploy backend
       uses: ./.github/workflows/images.yml
-      if: (${{github.event_name == 'workflow_dispatch'}} && ${{inputs.service=='be'}}) || ${{needs.be-check.outputs.run == 'true'}}
+      if: (${{github.event_name == 'workflow_dispatch'}} && ${{inputs.service=='be'}}) || (${{github.event_name != 'workflow_dispatch'}} && ${{needs.be-check.outputs.run == 'true'}})
       with: 
         name: be 
         dockerfile: backend.Dockerfile
