@@ -39,17 +39,18 @@ jobs:
               run: |
                 git fetch --tags
 
-                LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
+                LATEST_TAG=$(git tag --sort=-v:refname | grep "${{inputs.name}}$" | head -n 1)
 
                 if [ -z "$LATEST_TAG" ]; then
-                LATEST_TAG="0.0.0"
+                  LATEST_TAG="0.0.0"
                 fi
 
                 IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_TAG"
+                IFS="-" read -r PATCH NAME <<< "$PATCH"
 
                 PATCH=$((PATCH + 1))
 
-                NEW_TAG="$MAJOR.$MINOR.$PATCH"
+                NEW_TAG="$MAJOR.$MINOR.$PATCH-${NAME}"
 
                 echo "Tag for this commit: $NEW_TAG"
 
@@ -67,6 +68,7 @@ jobs:
 
                 BUILD_ARGS_STRING=""
                 for ARG in "${BUILD_ARGS_ARRAY[@]}"; do
+                  echo $ARG
                   BUILD_ARGS_STRING+="--build-arg $ARG "
                 done
 
