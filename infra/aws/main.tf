@@ -11,16 +11,25 @@ data "aws_vpc" "default" {
   default = true
 }
 
-resource "aws_subnet" "eks_private_subnet" {
-  vpc_id     = data.aws_vpc.default.id
-  cidr_block = "172.31.0.0/27"
-  tags       = local.tags
+resource "aws_subnet" "eks_private_subnet1" {
+  vpc_id            = data.aws_vpc.default.id
+  cidr_block        = "172.31.0.0/27"
+  tags              = local.tags
+  availability_zone = "eu-central-1a"
+}
+
+resource "aws_subnet" "eks_private_subnet2" {
+  vpc_id            = data.aws_vpc.default.id
+  cidr_block        = "172.31.0.32/27"
+  tags              = local.tags
+  availability_zone = "eu-central-1b"
 }
 
 module "eks" {
   source             = "terraform-aws-modules/eks/aws"
   version            = "~> 21.0"
   name               = local.cluster_name
+  kubernetes_version = "1.35"
 
   addons = {
     kube-proxy = {}
@@ -30,15 +39,18 @@ module "eks" {
     }
   }
 
-  create_kms_key    = false
-  attach_encryption_policy = false 
-  encryption_config = null 
+  create_kms_key           = false
+  attach_encryption_policy = false
+  encryption_config        = null
 
   endpoint_public_access                   = true
   enable_cluster_creator_admin_permissions = true
 
-  vpc_id     = data.aws_vpc.default.id
-  subnet_ids = [aws_subnet.eks_private_subnet.id]
+  vpc_id = data.aws_vpc.default.id
+  subnet_ids = [
+    aws_subnet.eks_private_subnet1.id,
+    aws_subnet.eks_private_subnet2.id
+  ]
 
   compute_config = {
     enabled = false
@@ -46,13 +58,13 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      name = "cicd1"
-      ami_type       = "AL2_x86_64"
+      name           = "cicd1"
+      ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["t3.micro"]
 
       min_size     = 1
       max_size     = 3
-      desired_size = 2
+      desired_size = 1
     }
   }
 
