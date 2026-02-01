@@ -3,6 +3,7 @@
 
 .terraform*
 *.env 
+*.tfstate*
 
 ### react ###
 .DS_*
