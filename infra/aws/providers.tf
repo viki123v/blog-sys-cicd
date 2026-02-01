@@ -1,8 +1,12 @@
 terraform {
   required_providers {
-    aws = { 
+    aws = {
       source  = "hashicorp/aws"
       version = "~> 6.0"
+    }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
     }
   }
 }
