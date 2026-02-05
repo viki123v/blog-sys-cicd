@@ -3,7 +3,7 @@ LABEL org.opencontainers.image.description="Backend Docker image for Blog Sys ap
 
 WORKDIR /app
 RUN apt-get update && \
-    apt-get install -y curl 
+    apt-get install -y curl build-essential pkg-config 
 
 
 
