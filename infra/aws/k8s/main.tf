@@ -103,12 +103,13 @@ resource "kubectl_manifest" "be-app" {
 }
 
 resource "kubectl_manifest" "be-service" {
-  yaml_body = file("${local.manifests_root}/be/service.yaml")
+  yaml_body = file("${local.manifests_root}/be/prod/service.yaml")
   depends_on = [
     kubectl_manifest.be-app
    ]
 }
 
+#The url from be-service must be added as a VITE_HOST in the frontend 
 resource "kubectl_manifest" "fe-app" {
   yaml_body = file("${local.manifests_root}/fe/app.yaml")
   depends_on = [
