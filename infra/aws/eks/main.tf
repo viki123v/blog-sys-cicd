@@ -14,18 +14,24 @@ data "aws_vpc" "default" {
 
 resource "aws_subnet" "eks_private_subnet1" {
   vpc_id                  = data.aws_vpc.default.id
-  cidr_block              = "172.31.0.0/27"
+  cidr_block              = "172.31.0.128/25"
   availability_zone       = "eu-central-1a"
   map_public_ip_on_launch = true
-  tags                    = local.tags
+  tags = merge(local.tags, {
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                    = "1"
+  })
 }
 
 resource "aws_subnet" "eks_private_subnet2" {
   vpc_id                  = data.aws_vpc.default.id
-  cidr_block              = "172.31.0.32/27"
+  cidr_block              = "172.31.0.0/25"
   availability_zone       = "eu-central-1b"
   map_public_ip_on_launch = true
-  tags                    = local.tags
+  tags = merge(local.tags, {
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                    = "1"
+  })
 }
 
 data "aws_route_table" "default" {
@@ -86,7 +92,7 @@ module "eks" {
       ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["t3.small"]
 
-      desired_size = 3 #TODO: Adjust the number of pods, when the deployment finishes 
+      desired_size = 3
       min_size     = 1
       max_size     = 4
 

@@ -80,3 +80,45 @@ resource "kubectl_manifest" "init-db" {
     kubectl_manifest.init-sql-config,
   ]
 }
+
+resource "kubectl_manifest" "be-secrets" {
+  yaml_body = file("${local.manifests_root}/be/secrets.yaml")
+  depends_on = [
+    kubectl_manifest.init-db
+   ]
+}
+
+resource "kubectl_manifest" "be-pvc" {
+  yaml_body = file("${local.manifests_root}/be/storage/prod/pv-claim.yaml")
+  depends_on = [
+    kubectl_manifest.init-db
+   ]
+}
+
+resource "kubectl_manifest" "be-app" {
+  yaml_body = file("${local.manifests_root}/be/app.yaml")
+  depends_on = [
+    kubectl_manifest.be-secrets
+   ]
+}
+
+resource "kubectl_manifest" "be-service" {
+  yaml_body = file("${local.manifests_root}/be/service.yaml")
+  depends_on = [
+    kubectl_manifest.be-app
+   ]
+}
+
+resource "kubectl_manifest" "fe-app" {
+  yaml_body = file("${local.manifests_root}/fe/app.yaml")
+  depends_on = [
+    kubectl_manifest.be-service
+   ]
+}
+
+resource "kubectl_manifest" "fe-service" {
+  yaml_body = file("${local.manifests_root}/fe/prod/service.yaml")
+  depends_on = [
+    kubectl_manifest.be-service
+   ]
+}
