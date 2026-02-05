@@ -4,9 +4,9 @@ metadata:
   name: be-pv-claim
   namespace: blog-prod
 spec:
-  storageClassName: manual
+  storageClassName: gp2
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 100Mi

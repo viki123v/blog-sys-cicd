@@ -7,6 +7,7 @@ spec:
   teamId: "admin"
   volume:
     size: 250Mi
+    storageClass: gp2
   numberOfInstances: 1  
   enableConnectionPooler: false
   users:

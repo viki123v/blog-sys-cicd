@@ -20,7 +20,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: be
-          image:  ghcr.io/viki123v/blog-sys-cicd/be:1.0.0
+          image:  ghcr.io/viki123v/blog-sys-cicd/be:2.0.1
           ports:
             - name: web
               containerPort: 80
