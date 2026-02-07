@@ -89,6 +89,9 @@ jobs:
                   BUILD_ARGS_STRING+="--build-arg $ARG "
                 done
 
+                echo "[LOG]"
+                echo $BUILD_ARGS_STRING
+
                 docker build \
                 -t ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:${{ steps.get_tag.outputs.TAG }} \
                 -f ./infra/${{inputs.dockerfile}} \
