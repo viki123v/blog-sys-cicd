@@ -1,5 +1,3 @@
-#TODO: remove the public ips 
-
 locals {
   tags = {
     Terraform = "true"
