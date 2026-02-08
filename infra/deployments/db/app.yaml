@@ -7,7 +7,7 @@ spec:
   teamId: "admin"
   volume:
     size: 250Mi
-    storageClass: efs-sc
+    storageClass: ebs-sc
   numberOfInstances: 1  
   enableConnectionPooler: false
   users:

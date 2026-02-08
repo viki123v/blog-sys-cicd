@@ -51,6 +51,58 @@ resource "aws_route_table_association" "eks_subnet2" {
   route_table_id = data.aws_route_table.default.id
 }
 
+module "ebs_csi_driver_irsa" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+
+  name = "ebs-csi"
+
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    this = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = local.tags 
+}
+
+module "efs_csi_driver_irsa" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+
+  name = "AmazonEKS_EFS_CSI_DriverRole"
+
+  attach_efs_csi_policy = true
+
+  trust_condition_test = "StringLike"
+
+  oidc_providers = {
+    this = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:efs-csi-*"]
+    }
+  }
+
+  tags = local.tags
+}
+
+resource "aws_efs_file_system" "blogwalk-fs" {
+  creation_token = "blogwalk-imgs"
+  tags = local.tags
+}
+
+resource "aws_efs_mount_target" "subnet1" {
+  file_system_id  = aws_efs_file_system.blogwalk-fs.id
+  subnet_id       = aws_subnet.eks_private_subnet1.id
+  security_groups = [module.eks.node_security_group_id]
+}
+
+resource "aws_efs_mount_target" "subnet2" {
+  file_system_id  = aws_efs_file_system.blogwalk-fs.id
+  subnet_id       = aws_subnet.eks_private_subnet2.id
+  security_groups = [module.eks.node_security_group_id]
+}
 
 module "eks" {
   source             = "terraform-aws-modules/eks/aws"
@@ -65,6 +117,18 @@ module "eks" {
       addon_version  = "v1.21.1-eksbuild.3"
     }
     coredns = {}
+    aws-ebs-csi-driver = {
+      service_account_role_arn    = module.ebs_csi_driver_irsa.arn
+      addon_version               = "v1.55.0-eksbuild.2"
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
+    }
+    aws-efs-csi-driver = {
+      service_account_role_arn    = module.efs_csi_driver_irsa.arn
+      addon_version               = "v2.3.0-eksbuild.1"
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
+    }
   }
 
   create_kms_key           = false
@@ -100,32 +164,6 @@ module "eks" {
   enable_irsa = true
 
   tags = local.tags
-}
-
-module "efs_csi_driver_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.20"
-
-  role_name_prefix = "efs-csi-driver-"
-
-  attach_efs_csi_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:efs-csi-controller-sa"]
-    }
-  }
-
-  tags = local.tags
-}
-
-resource "aws_eks_addon" "efs_csi_driver" {
-  cluster_name             = module.eks.cluster_name
-  addon_name               = "aws-efs-csi-driver"
-  service_account_role_arn = module.efs_csi_driver_irsa.iam_role_arn
-
-  depends_on = [module.eks]
 }
 
 data "aws_eks_cluster_auth" "main" {
