@@ -25,22 +25,30 @@ permissions:
 
 jobs:
     fe-check:
-        name: Frontend changed 
+        name: Frontend changed
         uses: ./.github/workflows/checks.yml
-        with: 
-            fs-path: frontend/**    
+        with:
+            fs-path: frontend/**
+
+    fe-build-args:
+      runs-on: ubuntu-latest
+      outputs:
+        args: ${{ steps.set-args.outputs.args }}
+      steps:
+        - name: Set build args
+          id: set-args
+          run: |
+            echo "args=NODE_VERSION=${{ vars.NODE_VERSION }},VITE_HOST=${{ vars.VITE_HOST }}" >> $GITHUB_OUTPUT
 
     fe-deploy:
-      needs: [ fe-check ]
+      needs: [ fe-check, fe-build-args ]
       name: Deploy Frontend
       uses: ./.github/workflows/images.yml
       if: ${{ (github.event_name == 'workflow_dispatch' && inputs.service == 'fe') || (github.event_name != 'workflow_dispatch' && needs.fe-check.outputs.run == 'true') }}
-      with: 
-        name: fe 
-        build-args: |
-          NODE_VERSION=${{ vars.NODE_VERSION }},
-          VITE_HOST=${{ vars.VITE_HOST }}
-        dockerfile: frontend.Dockerfile    
+      with:
+        name: fe
+        build-args: ${{ needs.fe-build-args.outputs.args }}
+        dockerfile: frontend.Dockerfile
         environment: prod
         tag: ${{ github.event.inputs.new-version || '' }}
 
