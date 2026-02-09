@@ -8,7 +8,7 @@ services:
       context: ..
       dockerfile: ./infra/frontend.Dockerfile 
       args:
-        - VITE_HOST=localhost:8000
+        - VITE_HOST=http://localhost:8000/api
     ports:
       - 5173:80
     depends_on:
@@ -28,7 +28,7 @@ services:
       - DB_PORT=5432
       - OBJECT_URL=http://localhost:8000/assets/user_icons
       - JWK=${JWK}
-      - ALLOWED_ORIGIN=${ALLOWED_ORIGIN}
+      - ALLOWED_ORIGIN=*
     ports:
       - 8000:80
     depends_on:
