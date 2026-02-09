@@ -39,7 +39,7 @@ jobs:
         - name: Set build args
           id: set-args
           run: |
-            echo "--build-arg NODE_VERSION=${{ vars.NODE_VERSION }} --build-arg VITE_HOST=${{ vars.VITE_HOST }}" >> $GITHUB_OUTPUT
+              echo "args=NODE_VERSION=${{ vars.NODE_VERSION }},VITE_HOST=${{ vars.VITE_HOST }}" >> $GITHUB_OUTPUT
 
     fe-deploy:
       needs: [ fe-check, fe-build-args ]
