@@ -135,3 +135,11 @@ resource "kubectl_manifest" "fe-service" {
     kubectl_manifest.be-service
    ]
 }
+
+resource "kubectl_manifest" "lb" {
+  yaml_body = file("${local.manifests_root}/ingress.yaml")
+  depends_on = [
+    kubectl_manifest.be-service,
+    kubectl_manifest.fe-service
+   ]
+}

@@ -9,6 +9,6 @@ mountOptions:
   - iam
 parameters:
   provisioningMode: efs-ap
-  fileSystemId: fs-0ffc7b89e781140d3
+  fileSystemId: fs-05a43c7d2ac807e9f
   directoryPerms: "770"
   basePath: "/blog-imgs" 

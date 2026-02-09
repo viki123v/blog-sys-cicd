@@ -1,7 +1,7 @@
 
 module "eks" {
   source       = "./eks"
-  cluster_name = "cicd-project"
+  cluster_name = "cicd-project1"
 }
 
 provider "kubectl" {

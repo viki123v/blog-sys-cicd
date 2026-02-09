@@ -2,7 +2,7 @@ if (import.meta.env.VITE_HOST === undefined) {
 	throw new Error("HOST is not defined");
 }
 
-export const API_HOST = `http://${import.meta.env.VITE_HOST}`;
+export const API_HOST = `${import.meta.env.VITE_HOST}`;
 console.log("ENV", import.meta.env.VITE_HOST);
 console.log("API_HOST:", API_HOST);
 

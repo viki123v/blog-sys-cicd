@@ -65,7 +65,7 @@ module "ebs_csi_driver_irsa" {
     }
   }
 
-  tags = local.tags 
+  tags = local.tags
 }
 
 module "efs_csi_driver_irsa" {
@@ -89,7 +89,7 @@ module "efs_csi_driver_irsa" {
 
 resource "aws_efs_file_system" "blogwalk-fs" {
   creation_token = "blogwalk-imgs"
-  tags = local.tags
+  tags           = local.tags
 }
 
 resource "aws_efs_mount_target" "subnet1" {
@@ -102,6 +102,24 @@ resource "aws_efs_mount_target" "subnet2" {
   file_system_id  = aws_efs_file_system.blogwalk-fs.id
   subnet_id       = aws_subnet.eks_private_subnet2.id
   security_groups = [module.eks.node_security_group_id]
+}
+
+module "lb_controller_irsa" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+
+  name = "aws-load-balancer-controller"
+
+  attach_load_balancer_controller_policy = true
+  use_name_prefix                        = false
+
+  oidc_providers = {
+    this = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-load-balancer-controller-sa"]
+    }
+  }
+
+  tags = local.tags
 }
 
 module "eks" {
@@ -146,6 +164,17 @@ module "eks" {
 
   compute_config = {
     enabled = false
+  }
+
+  node_security_group_additional_rules = {
+    ingress_allow_all = {
+      description = "Allow all inbound traffic"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
   }
 
   eks_managed_node_groups = {

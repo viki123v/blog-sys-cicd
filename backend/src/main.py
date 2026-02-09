@@ -10,7 +10,12 @@ from sqlalchemy.exc import IntegrityError
 from src.routers import blogs, users
 from src.shared import assets
 
-app = FastAPI()
+app = FastAPI(docs_url="/api/docs", openapi_url="/api/openapi.json")
+
+
+@app.get("/api")
+def health():
+    return {"status": "ok"}
 
 
 @app.exception_handler(IntegrityError)
@@ -41,6 +46,6 @@ app.add_middleware(
 if not os.path.exists(assets):
     Path.mkdir(assets)
 
-app.mount("/assets", StaticFiles(directory=assets), name="assets")
-app.include_router(users.router)
-app.include_router(blogs.router)
+app.mount("/api/assets", StaticFiles(directory=assets), name="assets")
+app.include_router(users.router, prefix="/api")
+app.include_router(blogs.router, prefix="/api")
