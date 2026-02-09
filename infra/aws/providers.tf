@@ -9,4 +9,10 @@ terraform {
       version = ">= 1.7.0"
     }
   }
+
+  backend "s3" {
+    bucket = "cicd-tfstate-viki123v"
+    key    = "state"
+    region = "eu-central-1"
+  }
 }

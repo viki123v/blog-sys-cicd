@@ -4,7 +4,7 @@ metadata:
   name: fe-service
   namespace: blog-prod 
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: fe
   ports:

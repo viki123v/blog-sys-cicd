@@ -15,8 +15,20 @@ data "kubectl_file_documents" "rbac-db" {
   content = file("${local.manifests_root}/db/rbac.yaml")
 }
 
+resource "kubectl_manifest" "ebs-storageclass" {
+  yaml_body = file("${local.manifests_root}/remote_storage/ebs.yaml")
+}
+
+resource "kubectl_manifest" "efs-storageclass" {
+  yaml_body = file("${local.manifests_root}/remote_storage/efs.yaml")
+}
+
 resource "kubectl_manifest" "gh-namespace" {
   yaml_body = file("${local.manifests_root}/namespace.yaml")
+  depends_on = [ 
+     kubectl_manifest.ebs-storageclass,
+     kubectl_manifest.efs-storageclass
+  ]
 }
 
 resource "kubectl_manifest" "gh_secret" {
@@ -121,5 +133,13 @@ resource "kubectl_manifest" "fe-service" {
   yaml_body = file("${local.manifests_root}/fe/prod/service.yaml")
   depends_on = [
     kubectl_manifest.be-service
+   ]
+}
+
+resource "kubectl_manifest" "lb" {
+  yaml_body = file("${local.manifests_root}/ingress.yaml")
+  depends_on = [
+    kubectl_manifest.be-service,
+    kubectl_manifest.fe-service
    ]
 }

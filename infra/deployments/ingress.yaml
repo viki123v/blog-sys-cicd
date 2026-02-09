@@ -1,22 +1,12 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-strip-api
-  namespace: blog-prod
-spec:
-  stripPrefix:
-    forceSlash: false
-    prefixes:
-      - /api
----
+# The controller for the ingress is added via helm
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: fe-be-ingress
   namespace: blog-prod
   annotations:
-    ingress.kubernetes.io/ssl-redirect: "false"
-    traefik.ingress.kubernetes.io/router.middlewares: blog-prod-traefik-strip-api@kubernetescrd
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
 spec:
   rules:
   - http:

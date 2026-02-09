@@ -13,3 +13,7 @@ output "eks_ca" {
 output "eks_token" {
   value = data.aws_eks_cluster_auth.main.token
 }
+
+output "efs_fs_id" {
+  value = resource.aws_efs_file_system.blogwalk-fs.id
+}

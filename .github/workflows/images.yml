@@ -81,13 +81,16 @@ jobs:
               if: steps.get_tag.outputs.TAG != ''
               working-directory: ./
               run: |
-                IFS="," read -r -a BUILD_ARGS_ARRAY <<<  $(echo "${{ inputs.build-args }}" | tr '\n' '')      
+                IFS="," read -r -a BUILD_ARGS_ARRAY <<<  $(echo "${{ inputs.build-args }}" | tr -d '\n')      
 
                 BUILD_ARGS_STRING=""
                 for ARG in "${BUILD_ARGS_ARRAY[@]}"; do
                   echo $ARG
                   BUILD_ARGS_STRING+="--build-arg $ARG "
                 done
+
+                echo "[LOG]"
+                echo $BUILD_ARGS_STRING
 
                 docker build \
                 -t ghcr.io/viki123v/blog-sys-cicd/${{inputs.name}}:${{ steps.get_tag.outputs.TAG }} \

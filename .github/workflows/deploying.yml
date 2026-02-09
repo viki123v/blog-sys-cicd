@@ -1,22 +1,26 @@
 name: Deploying images 
 
+# on:
+#     push:
+#         branches: 
+#           - master
+#     workflow_dispatch:
+#         inputs:
+#             service:
+#                 description: 'Service to deploy (fe or be)'
+#                 type: choice
+#                 options: 
+#                   - fe
+#                   - be
+#                 required: true
+#             new-version:
+#                 description: 'New version tag (xx.xx.xx)'
+#                 required: false
+#                 type: string   
 on:
-    push:
-        branches: 
-          - master
-    workflow_dispatch:
-        inputs:
-            service:
-                description: 'Service to deploy (fe or be)'
-                type: choice
-                options: 
-                  - fe
-                  - be
-                required: true
-            new-version:
-                description: 'New version tag (xx.xx.xx)'
-                required: false
-                type: string        
+    push: 
+        branches:
+          - "*"
    
 permissions:
     packages: write
